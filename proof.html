@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CORETEXA — Proof · verification benchmark</title>
-<meta name="description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by an independent verifier before it ships. Three runs, three catches — including a fix that passed a full test suite and was still wrong.">
+<meta name="description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by an independent verifier before it ships. Four runs, four catches — a false-green test suite, an un-reloadable "fix", and a doer’s overstated evidence, all stopped before close.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -390,12 +390,12 @@ footer a:hover{color:var(--cyan)}
   <p class="updated">last updated <b>2026-07-13</b> · <span class="live">● live</span> — appended as runs happen</p>
 
   <div class="score">
-    <div class="cell"><div class="k">Tickets run</div><div class="v">3</div></div>
-    <div class="cell"><div class="k">Verified</div><div class="v">3</div></div>
-    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">3<small>/3</small></div></div>
+    <div class="cell"><div class="k">Tickets run</div><div class="v">4</div></div>
+    <div class="cell"><div class="k">Verified</div><div class="v">4</div></div>
+    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">4<small>/4</small></div></div>
     <div class="cell"><div class="k">Self-closes</div><div class="v">0</div></div>
-    <div class="cell"><div class="k">PRs open</div><div class="v">3<small> / 0 merged</small></div></div>
-    <div class="cell"><div class="k">Ecosystems</div><div class="v" style="font-size:15px;padding-top:6px">TS · Py · Rust</div></div>
+    <div class="cell"><div class="k">PRs open</div><div class="v">4<small> / 0 merged</small></div></div>
+    <div class="cell"><div class="k">Ecosystems</div><div class="v" style="font-size:15px;padding-top:6px">TS · Py · Rust · Go</div></div>
   </div>
 
   <div class="callout">
@@ -410,6 +410,24 @@ footer a:hover{color:var(--cyan)}
 <section class="wrap">
   <div class="sec-tag"><span class="num">LOG</span> the run history</div>
   <div class="log">
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-13</span>
+        <span class="repo">bazelbuild/buildtools #1470</span>
+        <span class="badge lang">Go</span>
+        <span class="badge open">PR open</span>
+        <span class="badge caught">&#10003; verifier caught</span>
+      </div>
+      <h3>buildifier needed two passes to reach a stable format &mdash; and failed its own <code>--mode=check</code></h3>
+      <p>A compact block statement followed by a comment (<code>def f(): pass</code> + <code>#&nbsp;comment</code>) parsed to a different AST than its expanded form: the comment attached to the block instead of becoming a standalone comment statement, so pass&nbsp;1 omitted the separating blank line and freshly formatted files failed check-mode CI. The fix makes both forms parse identically; one pass now converges. 222-file differential sweep: zero changes to any stable format.</p>
+      <div class="catch"><b>Catch:</b> this time the verifier caught the <span class="em">evidence, not the code</span> &mdash; one of the doer's four test shapes never reproduced the bug, half the "tests pass" claim was vacuous (the cited test never exercises plain golden files), a code comment referenced behavior that doesn't exist, and a toolchain version mismatch would have shipped a noisy generated-table diff. All four corrected before submission.</p></div>
+      <div class="links">
+        <a href="https://github.com/bazelbuild/buildtools/pull/1481" target="_blank" rel="noopener">Pull request #1481 &rarr;</a>
+        <a href="https://github.com/bazelbuild/buildtools/issues/1470" target="_blank" rel="noopener">Issue #1470 &rarr;</a>
+      </div>
+    </article>
 
     <article class="entry">
       <span class="corner tl"></span><span class="corner br"></span>
@@ -505,15 +523,15 @@ footer a:hover{color:var(--cyan)}
     <div class="mcard">
       <h3>On deck</h3>
       <ul class="next">
-        <li><b>bazelbuild/buildtools #1470</b> (Go) — buildifier isn't idempotent; a formatted file fails its own <code>--mode=check</code>.</li>
+        <li><b>apple/swift-argument-parser #269</b> (Swift) — error codes ≥256 truncate, so a <b>failing process exits 0</b>; severity-5, open since 2021.</li>
         <li><b>modelcontextprotocol/typescript-sdk #2284</b> — spec requests with bad params return the wrong JSON-RPC error code. Filed by a core MCP maintainer; an MCP-native verifier fixing the MCP reference SDK.</li>
       </ul>
     </div>
     <div class="mcard">
       <h3>The claim, stated plainly</h3>
       <ul>
-        <li>Three runs, three catches — including a fix that passed a full test suite and was still wrong.</li>
-        <li>Across TypeScript, Python, and Rust — the protocol isn't tied to one stack.</li>
+        <li>Four runs, four catches — a false-green test suite, an un-reloadable "fix", and a doer’s overstated evidence, all stopped before close.</li>
+        <li>Across TypeScript, Python, Rust, and Go &mdash; the protocol isn&rsquo;t tied to one stack.</li>
         <li>The value isn't "AI wrote a patch." It's <b>a second actor stopped a bad one from closing.</b></li>
       </ul>
     </div>
