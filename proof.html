@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CORETEXA — Proof · verification benchmark</title>
-<meta name="description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by an independent verifier before it ships. Five runs, five catches — a false-green test suite, an un-reloadable "fix", a doer’s overstated evidence, and an overstated blast radius, all stopped before close.">
+<meta name="description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by an independent verifier before it ships. Six runs: five verifier catches (a false-green test suite, an un-reloadable fix, overstated evidence, overstated blast radius) and one honest first-pass-correct run — reported as such, because the metric only means something if it can tell them apart.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -387,16 +387,17 @@ footer a:hover{color:var(--cyan)}
   <div class="sec-tag kicker"><span class="num">PROOF</span> verification benchmark · a living log</div>
   <h1>We let a second agent <span class="hl">try to break</span> our own fixes.</h1>
   <p class="sub">Coretexa is the rule that the agent which does the work can't close it. This is the receipt: every time we run the loop against a real open-source bug, an independent verifier tries to refute the fix before it ships. Here is what it caught.</p>
-  <p class="updated">last updated <b>2026-07-13</b> · <span class="live">● live</span> — appended as runs happen</p>
+  <p class="updated">last updated <b>2026-07-14</b> · <span class="live">● live</span> — appended as runs happen</p>
 
   <div class="score">
-    <div class="cell"><div class="k">Tickets run</div><div class="v">5</div></div>
-    <div class="cell"><div class="k">Verified</div><div class="v">5</div></div>
-    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">5<small>/5</small></div></div>
+    <div class="cell"><div class="k">Tickets run</div><div class="v">6</div></div>
+    <div class="cell"><div class="k">Verified</div><div class="v">6</div></div>
+    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">5<small>/6</small></div></div>
+    <div class="cell"><div class="k">First-pass-correct</div><div class="v">1</div></div>
     <div class="cell"><div class="k">Self-closes</div><div class="v">0</div></div>
-    <div class="cell"><div class="k">PRs open</div><div class="v">5<small> / 0 merged</small></div></div>
-    <div class="cell"><div class="k">Ecosystems</div><div class="v" style="font-size:15px;padding-top:6px">TS · Py · Rust · Go</div></div>
+    <div class="cell"><div class="k">PRs open</div><div class="v">6<small> / 0 merged</small></div></div>
   </div>
+  <p class="proof-sub" style="text-align:left;margin:14px 0 0">Ecosystems: TypeScript · Python · Rust · Go — including GitHub&rsquo;s own <code>gh</code> CLI and the MCP reference SDK. Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim 6/6 &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything.</p>
 
   <div class="callout">
     <h3>A passing test suite lied — and the verifier caught it.</h3>
@@ -410,6 +411,24 @@ footer a:hover{color:var(--cyan)}
 <section class="wrap">
   <div class="sec-tag"><span class="num">LOG</span> the run history</div>
   <div class="log">
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-14</span>
+        <span class="repo">cli/cli #9252</span>
+        <span class="badge lang">Go</span>
+        <span class="badge open">PR open</span>
+        <span class="badge" style="color:var(--cyan);border-color:var(--cyan-dim)">&#9679; first-pass verified</span>
+      </div>
+      <h3><code>gh search code --repo A,B --web</code> built an <span style="color:var(--white)">unsatisfiable</span> query &mdash; on GitHub&rsquo;s own CLI</h3>
+      <p>Searching code across multiple repos with <code>--web</code> opened the browser with <code>keyword repo:A repo:B</code>. GitHub&rsquo;s code search ANDs repeated qualifiers, so that asks for a file in <em>both</em> repos at once &mdash; impossible &mdash; and the page returns &ldquo;condition is unsatisfiable.&rdquo; The fix OR-groups them: <code>( keyword ) (repo:A OR repo:B)</code>, scoped to github.com so enterprise&rsquo;s legacy search isn&rsquo;t disturbed. A verification protocol that runs on GitHub, fixing GitHub&rsquo;s own tool.</p>
+      <div class="catch" style="border-left-color:var(--cyan)"><b style="color:var(--cyan)">First-pass-correct.</b> <span class="em">The first run where the verifier didn&rsquo;t catch a defect</span> &mdash; the doer got the fix, tests, and scoping right first try. The verifier confirmed the non-obvious part: the parentheses are load-bearing. A naive <code>keyword repo:A OR repo:B</code> would parse as <code>(keyword AND repo:A) OR repo:B</code> &mdash; silently returning <em>every</em> file in the second repo. It also flagged one pre-existing scope gap (<code>--match file,path</code>), which we disclosed in the PR rather than silently ship or speculatively over-fix. We log this as <b style="color:var(--white)">not a catch</b>, on purpose.</div>
+      <div class="links">
+        <a href="https://github.com/cli/cli/pull/13874" target="_blank" rel="noopener">Pull request #13874 &rarr;</a>
+        <a href="https://github.com/cli/cli/issues/9252" target="_blank" rel="noopener">Issue #9252 &rarr;</a>
+      </div>
+    </article>
 
     <article class="entry">
       <span class="corner tl"></span><span class="corner br"></span>
@@ -543,14 +562,15 @@ footer a:hover{color:var(--cyan)}
       <ul class="next">
         <li><b>apple/swift-argument-parser #269</b> (Swift) — error codes ≥256 truncate, so a <b>failing process exits 0</b>; severity-5, open since 2021.</li>
         <li><b>Java slot</b> — a verified fix in google/gson or Netflix DGS, to add a sixth ecosystem to the log.</li>
+        <li><b>Scouting note:</b> favor issues a project has marked <code>help wanted</code>. Big repos (e.g. cli/cli) auto-close PRs against un-sanctioned issues regardless of quality — &ldquo;unclaimed&rdquo; isn&rsquo;t the same as &ldquo;wanted.&rdquo;</li>
       </ul>
     </div>
     <div class="mcard">
       <h3>The claim, stated plainly</h3>
       <ul>
-        <li>Five runs, five catches — a false-green test suite, an un-reloadable "fix", a doer’s overstated evidence, and an overstated blast radius, all stopped before close.</li>
-        <li>Across TypeScript, Python, Rust, and Go &mdash; the protocol isn&rsquo;t tied to one stack.</li>
-        <li>The value isn't "AI wrote a patch." It's <b>a second actor stopped a bad one from closing.</b></li>
+        <li>Six runs: <b>five verifier catches</b> — a false-green test suite, an un-reloadable "fix", overstated evidence, an overstated blast radius — <b>and one honest first-pass-correct</b> run, reported as such.</li>
+        <li>Across TypeScript, Python, Rust, and Go &mdash; including GitHub&rsquo;s own <code>gh</code> CLI and the MCP reference SDK. The protocol isn&rsquo;t tied to one stack.</li>
+        <li>The value isn't "AI wrote a patch." It's <b>a second actor stopped a bad one from closing</b> — and, when there was nothing to stop, said so.</li>
       </ul>
     </div>
   </div>
