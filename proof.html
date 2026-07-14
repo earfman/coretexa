@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CORETEXA — Proof · verification benchmark</title>
-<meta name="description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by an independent verifier before it ships. Four runs, four catches — a false-green test suite, an un-reloadable "fix", and a doer’s overstated evidence, all stopped before close.">
+<meta name="description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by an independent verifier before it ships. Five runs, five catches — a false-green test suite, an un-reloadable "fix", a doer’s overstated evidence, and an overstated blast radius, all stopped before close.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -390,11 +390,11 @@ footer a:hover{color:var(--cyan)}
   <p class="updated">last updated <b>2026-07-13</b> · <span class="live">● live</span> — appended as runs happen</p>
 
   <div class="score">
-    <div class="cell"><div class="k">Tickets run</div><div class="v">4</div></div>
-    <div class="cell"><div class="k">Verified</div><div class="v">4</div></div>
-    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">4<small>/4</small></div></div>
+    <div class="cell"><div class="k">Tickets run</div><div class="v">5</div></div>
+    <div class="cell"><div class="k">Verified</div><div class="v">5</div></div>
+    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">5<small>/5</small></div></div>
     <div class="cell"><div class="k">Self-closes</div><div class="v">0</div></div>
-    <div class="cell"><div class="k">PRs open</div><div class="v">4<small> / 0 merged</small></div></div>
+    <div class="cell"><div class="k">PRs open</div><div class="v">5<small> / 0 merged</small></div></div>
     <div class="cell"><div class="k">Ecosystems</div><div class="v" style="font-size:15px;padding-top:6px">TS · Py · Rust · Go</div></div>
   </div>
 
@@ -410,6 +410,24 @@ footer a:hover{color:var(--cyan)}
 <section class="wrap">
   <div class="sec-tag"><span class="num">LOG</span> the run history</div>
   <div class="log">
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-13</span>
+        <span class="repo">modelcontextprotocol/typescript-sdk #2284</span>
+        <span class="badge lang">TypeScript</span>
+        <span class="badge open">PR open</span>
+        <span class="badge caught">&#10003; verifier caught</span>
+      </div>
+      <h3>Invalid params to a spec method answered <code>-32603</code> Internal error instead of <code>-32602</code> Invalid params</h3>
+      <p>When a spec-defined method (e.g. <code>logging/setLevel</code>) got params that failed its wire schema, the dispatch closure re-threw a bare error and the funnel mapped it to <code>-32603</code> &mdash; telling the caller the <em>server</em> broke when in fact the <em>request</em> was malformed. Per JSON-RPC&nbsp;2.0 that&rsquo;s <code>-32602</code>. Custom handlers with a params schema already answered <code>-32602</code>; the fix brings spec methods in line. Filed by a core MCP maintainer; an MCP-native verifier fixing the MCP reference SDK.</p>
+      <div class="catch"><b>Catch:</b> the verifier caught an <span class="em">overstated blast radius</span> &mdash; the doer&rsquo;s first writeup implied ordinary <code>Server</code> consumers hit the bug, but the <code>Server</code> wrapper validates params first and already returned <code>-32602</code>; the real leak was confined to unwrapped spec-method dispatch / raw <code>Protocol</code> consumers. It also caught that <code>logging/setLevel</code> is deleted from the 2026 era registry, so the &ldquo;covers both eras&rdquo; claim had to be re-scoped. Corrected before the PR opened.</div>
+      <div class="links">
+        <a href="https://github.com/modelcontextprotocol/typescript-sdk/pull/2492" target="_blank" rel="noopener">Pull request #2492 &rarr;</a>
+        <a href="https://github.com/modelcontextprotocol/typescript-sdk/issues/2284" target="_blank" rel="noopener">Issue #2284 &rarr;</a>
+      </div>
+    </article>
 
     <article class="entry">
       <span class="corner tl"></span><span class="corner br"></span>
@@ -524,13 +542,13 @@ footer a:hover{color:var(--cyan)}
       <h3>On deck</h3>
       <ul class="next">
         <li><b>apple/swift-argument-parser #269</b> (Swift) — error codes ≥256 truncate, so a <b>failing process exits 0</b>; severity-5, open since 2021.</li>
-        <li><b>modelcontextprotocol/typescript-sdk #2284</b> — spec requests with bad params return the wrong JSON-RPC error code. Filed by a core MCP maintainer; an MCP-native verifier fixing the MCP reference SDK.</li>
+        <li><b>Java slot</b> — a verified fix in google/gson or Netflix DGS, to add a sixth ecosystem to the log.</li>
       </ul>
     </div>
     <div class="mcard">
       <h3>The claim, stated plainly</h3>
       <ul>
-        <li>Four runs, four catches — a false-green test suite, an un-reloadable "fix", and a doer’s overstated evidence, all stopped before close.</li>
+        <li>Five runs, five catches — a false-green test suite, an un-reloadable "fix", a doer’s overstated evidence, and an overstated blast radius, all stopped before close.</li>
         <li>Across TypeScript, Python, Rust, and Go &mdash; the protocol isn&rsquo;t tied to one stack.</li>
         <li>The value isn't "AI wrote a patch." It's <b>a second actor stopped a bad one from closing.</b></li>
       </ul>
