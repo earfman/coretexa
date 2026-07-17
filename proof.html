@@ -395,7 +395,7 @@ footer a:hover{color:var(--cyan)}
     <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">5<small>/6</small></div></div>
     <div class="cell"><div class="k">First-pass-correct</div><div class="v">1</div></div>
     <div class="cell"><div class="k">Self-closes</div><div class="v">0</div></div>
-    <div class="cell"><div class="k">PRs open</div><div class="v">6<small> / 0 merged</small></div></div>
+    <div class="cell hero-cell"><div class="k">Merged</div><div class="v">1<small> / 6 PRs</small></div></div>
   </div>
   <p class="proof-sub" style="text-align:left;margin:14px 0 0">Ecosystems: TypeScript · Python · Rust · Go — including GitHub&rsquo;s own <code>gh</code> CLI and the MCP reference SDK. Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim 6/6 &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything.</p>
 
@@ -454,10 +454,11 @@ footer a:hover{color:var(--cyan)}
         <span class="date">2026-07-13</span>
         <span class="repo">bazelbuild/buildtools #1470</span>
         <span class="badge lang">Go</span>
-        <span class="badge open">PR open</span>
+        <span class="badge" style="color:var(--ground);background:var(--ok);border-color:var(--ok);font-weight:600">&#10003; MERGED</span>
         <span class="badge caught">&#10003; verifier caught</span>
       </div>
       <h3>buildifier needed two passes to reach a stable format &mdash; and failed its own <code>--mode=check</code></h3>
+      <p style="color:var(--ok);font-size:13px;margin-bottom:6px"><b>Merged into <code>bazelbuild:main</code></b> by a Bazel maintainer (&ldquo;Thanks!&rdquo;) &mdash; the benchmark&rsquo;s first merge, on Google/Bazel core tooling.</p>
       <p>A compact block statement followed by a comment (<code>def f(): pass</code> + <code>#&nbsp;comment</code>) parsed to a different AST than its expanded form: the comment attached to the block instead of becoming a standalone comment statement, so pass&nbsp;1 omitted the separating blank line and freshly formatted files failed check-mode CI. The fix makes both forms parse identically; one pass now converges. 222-file differential sweep: zero changes to any stable format.</p>
       <div class="catch"><b>Catch:</b> this time the verifier caught the <span class="em">evidence, not the code</span> &mdash; one of the doer's four test shapes never reproduced the bug, half the "tests pass" claim was vacuous (the cited test never exercises plain golden files), a code comment referenced behavior that doesn't exist, and a toolchain version mismatch would have shipped a noisy generated-table diff. All four corrected before submission.</p></div>
       <div class="links">
