@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CORETEXA — Proof · verification benchmark</title>
-<meta name="description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by an independent verifier before it ships. Seven runs: six verifier catches (a false-green test suite, an un-reloadable fix, overstated evidence, overstated blast radius, a misstated regression scope) and one honest first-pass-correct run — reported as such, because the metric only means something if it can tell them apart.">
+<meta name="description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by an independent verifier before it ships. Eight runs: seven verifier catches (a false-green test suite, an un-reloadable fix, overstated evidence, overstated blast radius, a misstated regression scope, a JWKS auth outage) and one honest first-pass-correct run — reported as such, because the metric only means something if it can tell them apart.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -390,14 +390,14 @@ footer a:hover{color:var(--cyan)}
   <p class="updated">last updated <b>2026-07-17</b> · <span class="live">● live</span> — appended as runs happen</p>
 
   <div class="score">
-    <div class="cell"><div class="k">Tickets run</div><div class="v">7</div></div>
-    <div class="cell"><div class="k">Verified</div><div class="v">7</div></div>
-    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">6<small>/7</small></div></div>
+    <div class="cell"><div class="k">Tickets run</div><div class="v">8</div></div>
+    <div class="cell"><div class="k">Verified</div><div class="v">8</div></div>
+    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">7<small>/8</small></div></div>
     <div class="cell"><div class="k">First-pass-correct</div><div class="v">1</div></div>
     <div class="cell"><div class="k">Self-closes</div><div class="v">0</div></div>
-    <div class="cell hero-cell"><div class="k">Merged</div><div class="v">1<small> / 7 PRs</small></div></div>
+    <div class="cell hero-cell"><div class="k">Merged</div><div class="v">1<small> / 8 PRs</small></div></div>
   </div>
-  <p class="proof-sub" style="text-align:left;margin:14px 0 0"><b style="color:var(--ok)">First merge landed:</b> a Bazel maintainer merged the <code>buildtools</code> fix (run 4) into <code>bazelbuild:main</code> &mdash; Google/Bazel core tooling. Ecosystems: TypeScript · Python · Rust · Go · Java — including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, and Google&rsquo;s gson (1B+ downloads). Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim 7/7 &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything.</p>
+  <p class="proof-sub" style="text-align:left;margin:14px 0 0"><b style="color:var(--ok)">First merge landed:</b> a Bazel maintainer merged the <code>buildtools</code> fix (run 4) into <code>bazelbuild:main</code> &mdash; Google/Bazel core tooling. Ecosystems: TypeScript · Python · Rust · Go · Java — including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, and Google&rsquo;s gson (1B+ downloads). Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim 8/8 &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything.</p>
 
   <div class="callout">
     <h3>A passing test suite lied — and the verifier caught it.</h3>
@@ -411,6 +411,24 @@ footer a:hover{color:var(--cyan)}
 <section class="wrap">
   <div class="sec-tag"><span class="num">LOG</span> the run history</div>
   <div class="log">
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-17</span>
+        <span class="repo">PrefectHQ/fastmcp #4515</span>
+        <span class="badge lang">Python</span>
+        <span class="badge open">PR open</span>
+        <span class="badge caught">&#10003; verifier caught</span>
+      </div>
+      <h3>One unsupported key in a JWKS rejected <span style="color:var(--white)">every</span> token &mdash; on the MCP auth path</h3>
+      <p>FastMCP&rsquo;s <code>JWTVerifier</code> converted every key in a remote JWKS up front with no per-key guard, so a single Ed25519 key (which Rauthy and Ory Hydra publish next to their RSA keys) made the whole set fail &mdash; every token rejected, including ones validly RSA-signed. The fix skips unusable keys per RFC 7517 instead of letting one poison the set. First bug run through our new automated <b style="color:var(--white)">find&rarr;fix&rarr;verify&rarr;stage</b> pipeline, then held for a human to approve posting.</p>
+      <div class="catch"><b>Catch (and a first):</b> the verifier&rsquo;s 20 adversarial probes couldn&rsquo;t break the code &mdash; but it caught the write-up calling the change &ldquo;behavior identical&rdquo; (it wasn&rsquo;t; full inventory now in the PR), a missed hardening case, and &mdash; the notable one &mdash; a <b style="color:var(--white)">sanction ruling</b>: the issue reporter had offered a PR, so posting silently would have appropriated their diagnosis. We led the PR with credit to them and offered co-authorship on the issue. The protocol&rsquo;s own no-self-ship rule, applied to us: the doer staged, a human shipped.</div>
+      <div class="links">
+        <a href="https://github.com/PrefectHQ/fastmcp/pull/4517" target="_blank" rel="noopener">Pull request #4517 &rarr;</a>
+        <a href="https://github.com/PrefectHQ/fastmcp/issues/4515" target="_blank" rel="noopener">Issue #4515 &rarr;</a>
+      </div>
+    </article>
 
     <article class="entry">
       <span class="corner tl"></span><span class="corner br"></span>
@@ -579,7 +597,6 @@ footer a:hover{color:var(--cyan)}
     <div class="mcard">
       <h3>On deck</h3>
       <ul class="next">
-        <li><b>Staged &amp; verified, awaiting the human gate:</b> PrefectHQ/fastmcp #4515 — one unsupported Ed25519 key in a JWKS rejected <em>every</em> token. Fixed, adversarially verified, and held for approval before posting — the protocol&rsquo;s no-self-ship rule applied to ourselves.</li>
         <li><b>Recent, active MCP-ecosystem repos</b> — young servers and SDKs with real users and mechanical bugs, where review actually happens. The ts-sdk run proved the fit.</li>
         <li><b>Scouting gate (sharpened):</b> not just &ldquo;is the issue unclaimed&rdquo; but &ldquo;is the fix approach uncontested.&rdquo; swift-argument-parser was dropped from the queue — its entire bug backlog is design-blocked by maintainer debate.</li>
         <li><b>Scouting note:</b> favor issues a project has marked <code>help wanted</code>. Big repos (e.g. cli/cli) auto-close PRs against un-sanctioned issues regardless of quality — &ldquo;unclaimed&rdquo; isn&rsquo;t the same as &ldquo;wanted.&rdquo;</li>
@@ -589,8 +606,8 @@ footer a:hover{color:var(--cyan)}
       <h3>The claim, stated plainly</h3>
       <ul>
         <li><b style="color:var(--ok)">One merged into Google/Bazel core tooling</b> — a real maintainer reviewed and accepted a Coretexa-verified fix. Distribution, not just verification.</li>
-        <li>Seven runs: <b>six verifier catches</b> — a false-green test suite, an un-reloadable "fix", overstated evidence, an overstated blast radius, a misstated regression scope — <b>and one honest first-pass-correct</b> run, reported as such.</li>
-        <li>Across TypeScript, Python, Rust, Go, and Java &mdash; including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, and Google&rsquo;s gson. The protocol isn&rsquo;t tied to one stack.</li>
+        <li>Eight runs: <b>seven verifier catches</b> — a false-green test suite, an un-reloadable "fix", overstated evidence, an overstated blast radius, a misstated regression scope — <b>and one honest first-pass-correct</b> run, reported as such.</li>
+        <li>Across TypeScript, Python, Rust, Go, and Java &mdash; including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, Google&rsquo;s gson, and the FastMCP auth layer. The protocol isn&rsquo;t tied to one stack.</li>
         <li>The value isn't "AI wrote a patch." It's <b>a second actor stopped a bad one from closing</b> — and, when there was nothing to stop, said so.</li>
       </ul>
     </div>
