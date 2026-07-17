@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CORETEXA — Proof · verification benchmark</title>
-<meta name="description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by an independent verifier before it ships. Six runs: five verifier catches (a false-green test suite, an un-reloadable fix, overstated evidence, overstated blast radius) and one honest first-pass-correct run — reported as such, because the metric only means something if it can tell them apart.">
+<meta name="description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by an independent verifier before it ships. Seven runs: six verifier catches (a false-green test suite, an un-reloadable fix, overstated evidence, overstated blast radius, a misstated regression scope) and one honest first-pass-correct run — reported as such, because the metric only means something if it can tell them apart.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -387,17 +387,17 @@ footer a:hover{color:var(--cyan)}
   <div class="sec-tag kicker"><span class="num">PROOF</span> verification benchmark · a living log</div>
   <h1>We let a second agent <span class="hl">try to break</span> our own fixes.</h1>
   <p class="sub">Coretexa is the rule that the agent which does the work can't close it. This is the receipt: every time we run the loop against a real open-source bug, an independent verifier tries to refute the fix before it ships. Here is what it caught.</p>
-  <p class="updated">last updated <b>2026-07-14</b> · <span class="live">● live</span> — appended as runs happen</p>
+  <p class="updated">last updated <b>2026-07-17</b> · <span class="live">● live</span> — appended as runs happen</p>
 
   <div class="score">
-    <div class="cell"><div class="k">Tickets run</div><div class="v">6</div></div>
-    <div class="cell"><div class="k">Verified</div><div class="v">6</div></div>
-    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">5<small>/6</small></div></div>
+    <div class="cell"><div class="k">Tickets run</div><div class="v">7</div></div>
+    <div class="cell"><div class="k">Verified</div><div class="v">7</div></div>
+    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">6<small>/7</small></div></div>
     <div class="cell"><div class="k">First-pass-correct</div><div class="v">1</div></div>
     <div class="cell"><div class="k">Self-closes</div><div class="v">0</div></div>
-    <div class="cell hero-cell"><div class="k">Merged</div><div class="v">1<small> / 6 PRs</small></div></div>
+    <div class="cell hero-cell"><div class="k">Merged</div><div class="v">1<small> / 7 PRs</small></div></div>
   </div>
-  <p class="proof-sub" style="text-align:left;margin:14px 0 0"><b style="color:var(--ok)">First merge landed:</b> a Bazel maintainer merged the <code>buildtools</code> fix (run 4) into <code>bazelbuild:main</code> &mdash; Google/Bazel core tooling. Ecosystems: TypeScript · Python · Rust · Go — including GitHub&rsquo;s own <code>gh</code> CLI and the MCP reference SDK. Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim 6/6 &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything.</p>
+  <p class="proof-sub" style="text-align:left;margin:14px 0 0"><b style="color:var(--ok)">First merge landed:</b> a Bazel maintainer merged the <code>buildtools</code> fix (run 4) into <code>bazelbuild:main</code> &mdash; Google/Bazel core tooling. Ecosystems: TypeScript · Python · Rust · Go · Java — including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, and Google&rsquo;s gson (1B+ downloads). Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim 7/7 &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything.</p>
 
   <div class="callout">
     <h3>A passing test suite lied — and the verifier caught it.</h3>
@@ -411,6 +411,24 @@ footer a:hover{color:var(--cyan)}
 <section class="wrap">
   <div class="sec-tag"><span class="num">LOG</span> the run history</div>
   <div class="log">
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-17</span>
+        <span class="repo">google/gson #992</span>
+        <span class="badge lang">Java</span>
+        <span class="badge open">PR open</span>
+        <span class="badge caught">&#10003; verifier caught</span>
+      </div>
+      <h3>Equal <code>JsonPrimitive</code>s hashed differently &mdash; breaking <code>HashMap</code> after every JSON round-trip</h3>
+      <p>gson&rsquo;s <code>equals</code> treats <code>42</code>, a parsed <code>&quot;42&quot;</code>, and <code>42.0</code> as equal &mdash; but <code>hashCode</code> used a different algorithm per backing type, violating Java&rsquo;s <code>Object.hashCode</code> contract. Store a value under <code>new JsonPrimitive(42)</code>, round-trip the number through JSON, and the lookup misses. The fix derives the hash solely from the <code>double</code> value every branch of <code>equals</code> compares. Java is the log&rsquo;s <b style="color:var(--white)">sixth ecosystem</b>, in a library with over a billion downloads.</p>
+      <div class="catch"><b>Catch:</b> the verifier fuzzed ~4.7M number pairs (zero violations survive the fix) &mdash; then attacked the <span class="em">report</span>. It caught the doer&rsquo;s writeup misstating which hash values change (integral-valued doubles like <code>42.0</code> change too, not just huge longs) and required disclosure of a pre-existing <code>equals</code> non-transitivity the fix deliberately does not touch. Both corrections landed in the PR before it opened. Filed with eyes open: gson is in maintenance mode, so this is banked as a quality proof point, not an expected merge.</div>
+      <div class="links">
+        <a href="https://github.com/google/gson/pull/3059" target="_blank" rel="noopener">Pull request #3059 &rarr;</a>
+        <a href="https://github.com/google/gson/issues/992" target="_blank" rel="noopener">Issue #992 &rarr;</a>
+      </div>
+    </article>
 
     <article class="entry">
       <span class="corner tl"></span><span class="corner br"></span>
@@ -561,8 +579,8 @@ footer a:hover{color:var(--cyan)}
     <div class="mcard">
       <h3>On deck</h3>
       <ul class="next">
-        <li><b>apple/swift-argument-parser #269</b> (Swift) — error codes ≥256 truncate, so a <b>failing process exits 0</b>; severity-5, open since 2021.</li>
-        <li><b>Java slot</b> — a verified fix in google/gson or Netflix DGS, to add a sixth ecosystem to the log.</li>
+        <li><b>Recent, active MCP-ecosystem repos</b> — young servers and SDKs with real users and mechanical bugs, where review actually happens. The ts-sdk run proved the fit.</li>
+        <li><b>Scouting gate (sharpened):</b> not just &ldquo;is the issue unclaimed&rdquo; but &ldquo;is the fix approach uncontested.&rdquo; swift-argument-parser was dropped from the queue — its entire bug backlog is design-blocked by maintainer debate.</li>
         <li><b>Scouting note:</b> favor issues a project has marked <code>help wanted</code>. Big repos (e.g. cli/cli) auto-close PRs against un-sanctioned issues regardless of quality — &ldquo;unclaimed&rdquo; isn&rsquo;t the same as &ldquo;wanted.&rdquo;</li>
       </ul>
     </div>
@@ -570,8 +588,8 @@ footer a:hover{color:var(--cyan)}
       <h3>The claim, stated plainly</h3>
       <ul>
         <li><b style="color:var(--ok)">One merged into Google/Bazel core tooling</b> — a real maintainer reviewed and accepted a Coretexa-verified fix. Distribution, not just verification.</li>
-        <li>Six runs: <b>five verifier catches</b> — a false-green test suite, an un-reloadable "fix", overstated evidence, an overstated blast radius — <b>and one honest first-pass-correct</b> run, reported as such.</li>
-        <li>Across TypeScript, Python, Rust, and Go &mdash; including GitHub&rsquo;s own <code>gh</code> CLI and the MCP reference SDK. The protocol isn&rsquo;t tied to one stack.</li>
+        <li>Seven runs: <b>six verifier catches</b> — a false-green test suite, an un-reloadable "fix", overstated evidence, an overstated blast radius, a misstated regression scope — <b>and one honest first-pass-correct</b> run, reported as such.</li>
+        <li>Across TypeScript, Python, Rust, Go, and Java &mdash; including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, and Google&rsquo;s gson. The protocol isn&rsquo;t tied to one stack.</li>
         <li>The value isn't "AI wrote a patch." It's <b>a second actor stopped a bad one from closing</b> — and, when there was nothing to stop, said so.</li>
       </ul>
     </div>
