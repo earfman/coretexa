@@ -395,7 +395,7 @@ footer a:hover{color:var(--cyan)}
     <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">7<small>/8</small></div></div>
     <div class="cell"><div class="k">First-pass-correct</div><div class="v">1</div></div>
     <div class="cell"><div class="k">Self-closes</div><div class="v">0</div></div>
-    <div class="cell hero-cell"><div class="k">Merged</div><div class="v">1<small> / 8 PRs</small></div></div>
+    <div class="cell hero-cell"><div class="k">Merged</div><div class="v">2<small> / 8 PRs</small></div></div>
   </div>
   <p class="proof-sub" style="text-align:left;margin:14px 0 0"><b style="color:var(--ok)">First merge landed:</b> a Bazel maintainer merged the <code>buildtools</code> fix (run 4) into <code>bazelbuild:main</code> &mdash; Google/Bazel core tooling. Ecosystems: TypeScript · Python · Rust · Go · Java — including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, and Google&rsquo;s gson (1B+ downloads). Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim 8/8 &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything.</p>
 
@@ -418,13 +418,13 @@ footer a:hover{color:var(--cyan)}
         <span class="date">2026-07-17</span>
         <span class="repo">PrefectHQ/fastmcp #4515</span>
         <span class="badge lang">Python</span>
-        <span class="badge" style="color:var(--amber);border-color:var(--amber)">&#9208; auto-closed &mdash; assignment gate</span>
+        <span class="badge" style="color:var(--ground);background:var(--ok);border-color:var(--ok);font-weight:600">&#10003; MERGED</span>
         <span class="badge caught">&#10003; verifier caught</span>
       </div>
       <h3>One unsupported key in a JWKS rejected <span style="color:var(--white)">every</span> token &mdash; on the MCP auth path</h3>
       <p>FastMCP&rsquo;s <code>JWTVerifier</code> converted every key in a remote JWKS up front with no per-key guard, so a single Ed25519 key (which Rauthy and Ory Hydra publish next to their RSA keys) made the whole set fail &mdash; every token rejected, including ones validly RSA-signed. The fix skips unusable keys per RFC 7517 instead of letting one poison the set. First bug run through our new automated <b style="color:var(--white)">find&rarr;fix&rarr;verify&rarr;stage</b> pipeline, then held for a human to approve posting.</p>
       <div class="catch"><b>Catch (and a first):</b> the verifier&rsquo;s 20 adversarial probes couldn&rsquo;t break the code &mdash; but it caught the write-up calling the change &ldquo;behavior identical&rdquo; (it wasn&rsquo;t; full inventory now in the PR), a missed hardening case, and &mdash; the notable one &mdash; a <b style="color:var(--white)">sanction ruling</b>: the issue reporter had offered a PR, so posting silently would have appropriated their diagnosis. We led the PR with credit to them and offered co-authorship on the issue. The protocol&rsquo;s own no-self-ship rule, applied to us: the doer staged, a human shipped.</div>
-      <p style="font-size:13px;margin-top:8px"><b style="color:var(--amber)">Update, same day:</b> 90 minutes after posting, the repo&rsquo;s Require Issue Link bot auto-closed the PR &mdash; their process requires the referenced issue to be <em>assigned</em> to the PR author first, a gate our scouting missed even after the cli/cli lesson. Logged here the day it happened. An assignment request is filed; per the bot, the PR reopens automatically once a maintainer assigns the issue. The fix and its verification are unchanged.</p>
+      <p style="font-size:13px;margin-top:8px"><b style="color:var(--ok)">Full arc, same day:</b> 90 minutes after posting, the repo&rsquo;s Require Issue Link bot auto-closed the PR (issue not yet assigned to the author &mdash; a process gate our scouting missed; we logged the miss here the hour it happened). One assignment-request comment later: a maintainer assigned the issue, the PR auto-reopened, and it was <b style="color:var(--ok)">merged the same evening</b> &mdash; the benchmark&rsquo;s second merge. The reporter&rsquo;s reply: &ldquo;Your version is better than what I&rsquo;d have sent.&rdquo; Crediting their diagnosis cost one sentence and earned an endorsement.</p>
       <div class="links">
         <a href="https://github.com/PrefectHQ/fastmcp/pull/4517" target="_blank" rel="noopener">Pull request #4517 &rarr;</a>
         <a href="https://github.com/PrefectHQ/fastmcp/issues/4515" target="_blank" rel="noopener">Issue #4515 &rarr;</a>
@@ -606,7 +606,7 @@ footer a:hover{color:var(--cyan)}
     <div class="mcard">
       <h3>The claim, stated plainly</h3>
       <ul>
-        <li><b style="color:var(--ok)">One merged into Google/Bazel core tooling</b> — a real maintainer reviewed and accepted a Coretexa-verified fix. Distribution, not just verification.</li>
+        <li><b style="color:var(--ok)">Two merged</b> — Google/Bazel core tooling, and the FastMCP auth layer (same-day merge, with the issue reporter endorsing the fix). Real maintainers reviewed and accepted Coretexa-verified fixes. Distribution, not just verification.</li>
         <li>Eight runs: <b>seven verifier catches</b> — a false-green test suite, an un-reloadable "fix", overstated evidence, an overstated blast radius, a misstated regression scope — <b>and one honest first-pass-correct</b> run, reported as such.</li>
         <li>Across TypeScript, Python, Rust, Go, and Java &mdash; including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, Google&rsquo;s gson, and the FastMCP auth layer. The protocol isn&rsquo;t tied to one stack.</li>
         <li>The value isn't "AI wrote a patch." It's <b>a second actor stopped a bad one from closing</b> — and, when there was nothing to stop, said so.</li>
