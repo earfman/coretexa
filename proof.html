@@ -418,12 +418,13 @@ footer a:hover{color:var(--cyan)}
         <span class="date">2026-07-17</span>
         <span class="repo">PrefectHQ/fastmcp #4515</span>
         <span class="badge lang">Python</span>
-        <span class="badge open">PR open</span>
+        <span class="badge" style="color:var(--amber);border-color:var(--amber)">&#9208; auto-closed &mdash; assignment gate</span>
         <span class="badge caught">&#10003; verifier caught</span>
       </div>
       <h3>One unsupported key in a JWKS rejected <span style="color:var(--white)">every</span> token &mdash; on the MCP auth path</h3>
       <p>FastMCP&rsquo;s <code>JWTVerifier</code> converted every key in a remote JWKS up front with no per-key guard, so a single Ed25519 key (which Rauthy and Ory Hydra publish next to their RSA keys) made the whole set fail &mdash; every token rejected, including ones validly RSA-signed. The fix skips unusable keys per RFC 7517 instead of letting one poison the set. First bug run through our new automated <b style="color:var(--white)">find&rarr;fix&rarr;verify&rarr;stage</b> pipeline, then held for a human to approve posting.</p>
       <div class="catch"><b>Catch (and a first):</b> the verifier&rsquo;s 20 adversarial probes couldn&rsquo;t break the code &mdash; but it caught the write-up calling the change &ldquo;behavior identical&rdquo; (it wasn&rsquo;t; full inventory now in the PR), a missed hardening case, and &mdash; the notable one &mdash; a <b style="color:var(--white)">sanction ruling</b>: the issue reporter had offered a PR, so posting silently would have appropriated their diagnosis. We led the PR with credit to them and offered co-authorship on the issue. The protocol&rsquo;s own no-self-ship rule, applied to us: the doer staged, a human shipped.</div>
+      <p style="font-size:13px;margin-top:8px"><b style="color:var(--amber)">Update, same day:</b> 90 minutes after posting, the repo&rsquo;s Require Issue Link bot auto-closed the PR &mdash; their process requires the referenced issue to be <em>assigned</em> to the PR author first, a gate our scouting missed even after the cli/cli lesson. Logged here the day it happened. An assignment request is filed; per the bot, the PR reopens automatically once a maintainer assigns the issue. The fix and its verification are unchanged.</p>
       <div class="links">
         <a href="https://github.com/PrefectHQ/fastmcp/pull/4517" target="_blank" rel="noopener">Pull request #4517 &rarr;</a>
         <a href="https://github.com/PrefectHQ/fastmcp/issues/4515" target="_blank" rel="noopener">Issue #4515 &rarr;</a>
