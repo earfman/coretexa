@@ -4,51 +4,48 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blog · CORETEXA</title>
-<meta name="description" content="Field notes on verifying AI-done work.">
+<meta name="description" content="Field notes on verifying AI-done work — the gate, the catches, and why a second reviewer that disagrees is worth more than one that agrees.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--ground:#071a30;--paper:#0a2138;--line:#18456e;--line-2:#1f5688;--hair:rgba(120,180,230,.16);--cyan:#22d3ee;--cyan-dim:#0e7f96;--amber:#f5b642;--white:#eaf4fb;--ink:#a8c6de;--ink-dim:#6c93b4;--ok:#3ddc97;--bad:#ff5d73;--mono:'IBM Plex Mono',ui-monospace,monospace;--sans:'Space Grotesk',system-ui,sans-serif;--maxw:1180px}
+:root{--ground:#071a30;--paper:#0a2138;--line:#18456e;--line-2:#1f5688;--hair:rgba(120,180,230,.16);--cyan:#22d3ee;--cyan-dim:#0e7f96;--amber:#f5b642;--white:#eaf4fb;--ink:#a8c6de;--ink-dim:#6c93b4;--ok:#3ddc97;--mono:'IBM Plex Mono',ui-monospace,monospace;--sans:'Space Grotesk',system-ui,sans-serif;--maxw:1180px}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--sans);background:var(--ground);color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
+body{font-family:var(--sans);background:var(--ground);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;min-height:100vh}
 body::before{content:"";position:fixed;inset:0;z-index:-2;background:linear-gradient(var(--hair) 1px,transparent 1px) 0 0/26px 26px,linear-gradient(90deg,var(--hair) 1px,transparent 1px) 0 0/26px 26px,radial-gradient(ellipse at 50% -10%,#0d2c4d 0%,var(--ground) 60%);pointer-events:none}
 a{color:inherit;text-decoration:none}
 ::selection{background:var(--cyan);color:var(--ground)}
-.wrap{max-width:820px;margin:0 auto;padding:0 28px}
-.mono{font-family:var(--mono)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
 nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);background:rgba(7,26,48,.72);border-bottom:1px solid var(--hair)}
 .nav-in{max-width:var(--maxw);margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:24px}
 .brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.14em;color:var(--white);font-size:15px}
 .brand .glyph{width:22px;height:22px;flex:none}
 .tag-mit{font-family:var(--mono);font-size:11px;color:var(--ink-dim);border:1px solid var(--hair);padding:3px 8px;border-radius:3px;letter-spacing:.08em}
 .nav-links{display:flex;gap:26px;margin-left:auto;font-family:var(--mono);font-size:13px}
-.nav-links a{color:var(--ink);transition:color .18s;position:relative}
+.nav-links a{color:var(--ink);transition:color .18s}
 .nav-links a:hover{color:var(--cyan)}
 .nav-links a.cur{color:var(--cyan)}
-article{padding:70px 0 40px}
-.sec-tag{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:22px}
+header.bloghead{padding:72px 0 30px}
+.sec-tag{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:20px}
 .sec-tag::before{content:"";width:34px;height:1px;background:var(--cyan);opacity:.6}
-h1{font-weight:600;color:var(--white);line-height:1.12;letter-spacing:-.02em;font-size:clamp(30px,4.4vw,46px);margin-bottom:18px}
-h2{font-weight:600;color:var(--white);letter-spacing:-.01em;font-size:24px;margin:44px 0 14px}
-.byline{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);margin-bottom:30px;letter-spacing:.04em}
-.byline .ok{color:var(--ok)}
-article p{margin:0 0 20px;font-size:17.5px}
-article p .hl{color:var(--cyan)}
-article strong{color:var(--white);font-weight:600}
-article code{font-family:var(--mono);font-size:.9em;background:var(--paper);border:1px solid var(--hair);border-radius:4px;padding:1px 6px;color:#cfe6f5}
-article a.link{color:var(--cyan);border-bottom:1px solid var(--cyan-dim)}
-article a.link:hover{border-color:var(--cyan)}
-figure{margin:26px 0 34px}
-figure img{width:100%;height:auto;border:1px solid var(--line);border-radius:12px;display:block}
-figcaption{font-family:var(--mono);font-size:12px;color:var(--ink-dim);margin-top:10px;text-align:center}
-.kicker{border-left:2px solid var(--cyan);padding-left:16px;color:var(--ink);font-size:19px;margin-bottom:34px}
-footer{border-top:1px solid var(--hair);padding:30px 0;margin-top:40px}
+h1{font-weight:600;color:var(--white);line-height:1.1;letter-spacing:-.02em;font-size:clamp(32px,4.6vw,50px);margin-bottom:14px}
+.lede{font-size:18px;color:var(--ink);max-width:640px}
+.count{font-family:var(--mono);font-size:12px;color:var(--ink-dim);margin-top:26px;letter-spacing:.04em;border-top:1px solid var(--hair);padding-top:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;padding:24px 0 90px}
+.post{display:flex;flex-direction:column;background:rgba(10,33,56,.55);border:1px solid var(--hair);border-radius:14px;padding:24px 24px 22px;transition:border-color .18s,transform .18s,box-shadow .18s}
+.post:hover{border-color:var(--line-2);transform:translateY(-2px);box-shadow:0 14px 34px -20px rgba(0,0,0,.7)}
+.post .meta{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;color:var(--ink-dim);letter-spacing:.05em;margin-bottom:14px}
+.post .meta .chip{color:var(--ok);border:1px solid rgba(61,220,151,.3);border-radius:20px;padding:2px 9px;text-transform:uppercase;letter-spacing:.1em;font-size:10px}
+.post h2{font-size:21px;font-weight:600;color:var(--white);line-height:1.25;letter-spacing:-.01em;margin-bottom:10px}
+.post:hover h2{color:var(--cyan)}
+.post p{font-size:14.5px;color:var(--ink);margin-bottom:18px;flex:1}
+.post .read{font-family:var(--mono);font-size:12.5px;color:var(--cyan-dim);align-self:flex-start}
+.post:hover .read{color:var(--cyan)}
+footer{border-top:1px solid var(--hair);padding:30px 0}
 .foot-in{max-width:var(--maxw);margin:0 auto;padding:0 28px;display:flex;gap:18px;flex-wrap:wrap;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--ink-dim)}
 .foot-in .dot{opacity:.5}
-.backlink{font-family:var(--mono);font-size:13px;color:var(--cyan-dim);display:inline-block;margin-bottom:30px}
-.backlink:hover{color:var(--cyan)}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -68,23 +65,48 @@ footer{border-top:1px solid var(--hair);padding:30px 0;margin-top:40px}
     </div>
   </div>
 </nav>
-<article>
+
+<header class="bloghead">
   <div class="wrap">
     <div class="sec-tag">Field notes</div>
-    <h1>Blog</h1>
-    <div class="byline">Notes on verifying AI-done work.</div>
-    <div style="border:1px solid var(--hair);border-radius:12px;padding:22px 24px;margin-top:20px;background:rgba(10,33,56,.5)">
-      <div class="byline" style="margin-bottom:8px">2026-07-22 <span class="dot">·</span> <span class="ok">verification</span></div>
-      <a href="/blog/the-bug-my-ai-reviewer-missed.html" style="color:var(--white);font-size:22px;font-weight:600">The bug my AI reviewer missed — and the second one that caught it</a>
-      <p style="margin-top:10px;color:var(--ink);font-size:16px">A single reviewer that agrees with you is theater. What's worth trusting is a second reviewer whose job is to prove you wrong — and one that just caught a real encoding crash a confirm-only pass had cleared.</p>
-      <a href="/blog/the-bug-my-ai-reviewer-missed.html" class="backlink" style="margin-top:8px">Read →</a>
-    </div>
+    <h1>Writing</h1>
+    <p class="lede">Notes from running an accountability queue for AI-done work — the gate, the catches it makes, and why a reviewer that disagrees with you is worth more than one that nods along.</p>
+    <div class="count" id="count"></div>
   </div>
-</article>
+</header>
+
+<main class="wrap">
+  <div class="grid" id="grid"></div>
+</main>
+
 <footer><div class="foot-in">
   <span><b style="color:var(--white);letter-spacing:.12em">CORETEXA</b> <span class="dot">·</span> coretexa.dev</span>
   <span>MIT <span class="dot">·</span> 2026 <span class="dot">·</span> the agent that does the work can't close it</span>
   <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener">GitHub →</a>
 </div></footer>
+
+<script>
+// Add new posts to the top of this array — the index and count update automatically.
+const POSTS = [
+  {
+    href: "/blog/the-bug-my-ai-reviewer-missed.html",
+    title: "The bug my AI reviewer missed — and the second one that caught it",
+    date: "2026-07-22",
+    tag: "verification",
+    excerpt: "A single reviewer that agrees with you is theater. What's worth trusting is a second reviewer whose job is to prove you wrong — and one that just caught a real encoding crash a confirm-only pass had cleared."
+  }
+];
+
+const grid = document.getElementById('grid');
+grid.innerHTML = POSTS.map(p => `
+  <a class="post" href="${p.href}">
+    <div class="meta"><span>${p.date}</span><span class="chip">${p.tag}</span></div>
+    <h2>${p.title}</h2>
+    <p>${p.excerpt}</p>
+    <span class="read">Read →</span>
+  </a>`).join('');
+document.getElementById('count').textContent =
+  POSTS.length + (POSTS.length === 1 ? ' article' : ' articles');
+</script>
 </body>
 </html>
