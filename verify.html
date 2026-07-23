@@ -257,10 +257,11 @@ RESULT: -shm sidecar created by a read? <span class="r">True</span></pre>
     <div class="panel final">
       <h2>Point it at your repo</h2>
       <p>Private beta. Connect one repo; we run the gate on your incoming PRs and send you the verdicts. Python &amp; JS/TS first.</p>
-      <form class="form" onsubmit="return false;">
-        <input type="email" placeholder="you@company.com" aria-label="email">
+      <form class="form" id="betaForm">
+        <input type="email" id="betaEmail" placeholder="you@company.com" aria-label="email" required>
         <button class="btn btn-primary btn-lg" type="submit">Request access</button>
       </form>
+      <p id="betaMsg" style="margin-top:14px;font-family:var(--mono);font-size:13px;min-height:18px;color:var(--ink-dim)"></p>
     </div>
   </div>
 </section>
@@ -272,5 +273,48 @@ RESULT: -shm sidecar created by a read? <span class="r">True</span></pre>
     <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener">GitHub →</a>
   </div>
 </footer>
+<script>
+(function(){
+  var SB_URL = 'https://fxorynsgvsbxtpgbrcwp.supabase.co';
+  var SB_KEY = 'sb_publishable_KntTYBXKYFdNnC1m7bzvkw_TgRhWCZQ';
+  var form = document.getElementById('betaForm');
+  var email = document.getElementById('betaEmail');
+  var msg = document.getElementById('betaMsg');
+  if (!form) return;
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var val = (email.value || '').trim();
+    if (!val || val.indexOf('@') < 1 || val.indexOf('.') < 0) {
+      msg.style.color = 'var(--bad)'; msg.textContent = 'Please enter a valid email address.'; return;
+    }
+    var btn = form.querySelector('button');
+    btn.disabled = true; msg.style.color = 'var(--ink-dim)'; msg.textContent = 'Sending…';
+    fetch(SB_URL + '/rest/v1/beta_signups', {
+      method: 'POST',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ email: val, source: 'verify.html', user_agent: navigator.userAgent })
+    }).then(function (r) {
+      if (r.ok) {
+        msg.style.color = 'var(--ok)';
+        msg.textContent = "Thanks — you're on the list. We'll be in touch.";
+        form.reset();
+      } else {
+        msg.style.color = 'var(--bad)';
+        msg.textContent = 'Something went wrong — please try again in a moment.';
+        btn.disabled = false;
+      }
+    }).catch(function () {
+      msg.style.color = 'var(--bad)';
+      msg.textContent = 'Network error — please try again.';
+      btn.disabled = false;
+    });
+  });
+})();
+</script>
 </body>
 </html>
