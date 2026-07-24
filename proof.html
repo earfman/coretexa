@@ -389,7 +389,7 @@ footer a:hover{color:var(--cyan)}
   <div class="sec-tag kicker"><span class="num">PROOF</span> verification benchmark · a living log</div>
   <h1>We let a second agent <span class="hl">try to break</span> our own fixes.</h1>
   <p class="sub">Coretexa is the rule that the agent which does the work can't close it. This is the receipt: every time we run the loop against a real open-source bug, an independent verifier tries to refute the fix before it ships. Here is what it caught.</p>
-  <p class="updated">last updated <b>2026-07-17</b> · <span class="live">● live</span> — appended as runs happen</p>
+  <p class="updated">last updated <b>2026-07-24</b> · <span class="live">● live</span> — appended as runs happen</p>
 
   <div class="score">
     <div class="cell"><div class="k">Tickets run</div><div class="v">8</div></div>
@@ -397,9 +397,9 @@ footer a:hover{color:var(--cyan)}
     <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">7<small>/8</small></div></div>
     <div class="cell"><div class="k">First-pass-correct</div><div class="v">1</div></div>
     <div class="cell"><div class="k">Self-closes</div><div class="v">0</div></div>
-    <div class="cell hero-cell"><div class="k">Merged</div><div class="v">2<small> / 8 PRs</small></div></div>
+    <div class="cell hero-cell"><div class="k">Merged</div><div class="v">3<small> / 8 PRs</small></div></div>
   </div>
-  <p class="proof-sub" style="text-align:left;margin:14px 0 0"><b style="color:var(--ok)">First merge landed:</b> a Bazel maintainer merged the <code>buildtools</code> fix (run 4) into <code>bazelbuild:main</code> &mdash; Google/Bazel core tooling. Ecosystems: TypeScript · Python · Rust · Go · Java — including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, and Google&rsquo;s gson (1B+ downloads). Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim 8/8 &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything.</p>
+  <p class="proof-sub" style="text-align:left;margin:14px 0 0"><b style="color:var(--ok)">Three merges landed:</b> a Bazel maintainer merged the <code>buildtools</code> fix into <code>bazelbuild:main</code> (Google/Bazel core tooling); the FastMCP auth fix merged the same evening it posted; and &mdash; the marquee &mdash; a Google maintainer merged the <code>gson</code> fix into <code>google/gson</code> after running it through Google&rsquo;s full internal test suite first (a library with 1B+ downloads). Ecosystems: TypeScript · Python · Rust · Go · Java — including GitHub&rsquo;s own <code>gh</code> CLI and the MCP reference SDK. Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim 8/8 &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything.</p>
 
   <div class="callout">
     <h3>A passing test suite lied — and the verifier caught it.</h3>
@@ -439,12 +439,13 @@ footer a:hover{color:var(--cyan)}
         <span class="date">2026-07-17</span>
         <span class="repo">google/gson #992</span>
         <span class="badge lang">Java</span>
-        <span class="badge open">PR open</span>
+        <span class="badge" style="color:var(--ground);background:var(--ok);border-color:var(--ok);font-weight:600">&#10003; MERGED</span>
         <span class="badge caught">&#10003; verifier caught</span>
       </div>
       <h3>Equal <code>JsonPrimitive</code>s hashed differently &mdash; breaking <code>HashMap</code> after every JSON round-trip</h3>
       <p>gson&rsquo;s <code>equals</code> treats <code>42</code>, a parsed <code>&quot;42&quot;</code>, and <code>42.0</code> as equal &mdash; but <code>hashCode</code> used a different algorithm per backing type, violating Java&rsquo;s <code>Object.hashCode</code> contract. Store a value under <code>new JsonPrimitive(42)</code>, round-trip the number through JSON, and the lookup misses. The fix derives the hash solely from the <code>double</code> value every branch of <code>equals</code> compares. Java is the log&rsquo;s <b style="color:var(--white)">sixth ecosystem</b>, in a library with over a billion downloads.</p>
-      <div class="catch"><b>Catch:</b> the verifier fuzzed ~4.7M number pairs (zero violations survive the fix) &mdash; then attacked the <span class="em">report</span>. It caught the doer&rsquo;s writeup misstating which hash values change (integral-valued doubles like <code>42.0</code> change too, not just huge longs) and required disclosure of a pre-existing <code>equals</code> non-transitivity the fix deliberately does not touch. Both corrections landed in the PR before it opened. Filed with eyes open: gson is in maintenance mode, so this is banked as a quality proof point, not an expected merge.</div>
+      <div class="catch"><b>Catch:</b> the verifier fuzzed ~4.7M number pairs (zero violations survive the fix) &mdash; then attacked the <span class="em">report</span>. It caught the doer&rsquo;s writeup misstating which hash values change (integral-valued doubles like <code>42.0</code> change too, not just huge longs) and required disclosure of a pre-existing <code>equals</code> non-transitivity the fix deliberately does not touch. Both corrections landed in the PR before it opened.</div>
+      <p style="font-size:13px;margin-top:8px"><b style="color:var(--ok)">Merged 07-23:</b> filed with eyes open &mdash; gson is largely in maintenance mode, so this was banked as a quality proof point, not an expected merge. It merged anyway: a Google maintainer ran the change through <b style="color:var(--white)">all of Google&rsquo;s internal tests</b> first (&ldquo;the test run passed, so I think this is good to go&rdquo;), then merged it into <code>google/gson</code> &mdash; the benchmark&rsquo;s third merge, and its highest-reputation one.</p>
       <div class="links">
         <a href="https://github.com/google/gson/pull/3059" target="_blank" rel="noopener">Pull request #3059 &rarr;</a>
         <a href="https://github.com/google/gson/issues/992" target="_blank" rel="noopener">Issue #992 &rarr;</a>
@@ -512,12 +513,13 @@ footer a:hover{color:var(--cyan)}
         <span class="date">2026-07-13</span>
         <span class="repo">servo/rust-url #1114</span>
         <span class="badge lang">Rust</span>
-        <span class="badge open">PR open</span>
+        <span class="badge" style="color:var(--ink-dim);border-color:var(--line)">closed · policy</span>
         <span class="badge caught">✓ verifier caught</span>
       </div>
       <h3>Panic joining a relative reference onto a <code>file:</code> URL with a drive-letter-shaped segment</h3>
       <p><code>pop_path</code> protected any path segment shaped like a Windows drive letter — even one not in drive position (the <code>a:</code> in <code>/w:/a:</code>) — so <code>..</code> was appended without a separating slash and a debug-assert panicked. The fix restricts the guard to the drive-position segment, per the WHATWG spec.</p>
       <div class="catch"><b>Catch:</b> the first fix <span class="em">passed the full WPT suite green</span> but regressed <code>file:///a:/..</code> to <code>file:///</code>. The verifier's differential sweep vs. the WHATWG oracle caught the false green; the fix was narrowed to a single hunk and re-verified byte-for-byte against the clean baseline.</p></div>
+      <p style="font-size:13px;margin-top:8px"><b style="color:var(--ink-dim)">Closed on policy 07-24:</b> a maintainer closed the PR because &ldquo;the Servo project does not currently allow AI contributions&rdquo; &mdash; a blanket policy, not a defect in the fix. Logged honestly: the verifier catch (a false green, caught before ship) still stands as the proof point; the distribution outcome was foreclosed by policy, not by the merits.</p>
       <div class="links">
         <a href="https://github.com/servo/rust-url/pull/1143" target="_blank" rel="noopener">Pull request #1143 →</a>
         <a href="https://github.com/servo/rust-url/issues/1114" target="_blank" rel="noopener">Issue #1114 →</a>
@@ -608,7 +610,7 @@ footer a:hover{color:var(--cyan)}
     <div class="mcard">
       <h3>The claim, stated plainly</h3>
       <ul>
-        <li><b style="color:var(--ok)">Two merged</b> — Google/Bazel core tooling, and the FastMCP auth layer (same-day merge, with the issue reporter endorsing the fix). Real maintainers reviewed and accepted Coretexa-verified fixes. Distribution, not just verification.</li>
+        <li><b style="color:var(--ok)">Three merged</b> — Google/Bazel core tooling (<code>buildtools</code>), the FastMCP auth layer (same-day merge, issue reporter endorsing the fix), and <code>google/gson</code> (a Google maintainer merged it after running Google&rsquo;s full internal test suite). Real maintainers reviewed and accepted Coretexa-verified fixes. Distribution, not just verification.</li>
         <li>Eight runs: <b>seven verifier catches</b> — a false-green test suite, an un-reloadable "fix", overstated evidence, an overstated blast radius, a misstated regression scope — <b>and one honest first-pass-correct</b> run, reported as such.</li>
         <li>Across TypeScript, Python, Rust, Go, and Java &mdash; including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, Google&rsquo;s gson, and the FastMCP auth layer. The protocol isn&rsquo;t tied to one stack.</li>
         <li>The value isn't "AI wrote a patch." It's <b>a second actor stopped a bad one from closing</b> — and, when there was nothing to stop, said so.</li>
