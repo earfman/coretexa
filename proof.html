@@ -392,14 +392,14 @@ footer a:hover{color:var(--cyan)}
   <p class="updated">last updated <b>2026-07-25</b> · <span class="live">● live</span> — appended as runs happen</p>
 
   <div class="score">
-    <div class="cell"><div class="k">Fix runs</div><div class="v">10</div></div>
+    <div class="cell"><div class="k">Fix runs</div><div class="v">12</div></div>
     <div class="cell"><div class="k">Bot PRs refuted</div><div class="v">5</div></div>
-    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">9<small>/10</small></div></div>
+    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">11<small>/12</small></div></div>
     <div class="cell"><div class="k">First-pass-correct</div><div class="v">1</div></div>
     <div class="cell"><div class="k">Self-closes</div><div class="v">0</div></div>
-    <div class="cell hero-cell"><div class="k">Merged</div><div class="v">3<small> +1 in review</small></div></div>
+    <div class="cell hero-cell"><div class="k">Merged</div><div class="v">4<small> / 3 in review</small></div></div>
   </div>
-  <p class="proof-sub" style="text-align:left;margin:14px 0 0"><b style="color:var(--ok)">Three merges landed:</b> a Bazel maintainer merged the <code>buildtools</code> fix into <code>bazelbuild:main</code> (Google/Bazel core tooling); the FastMCP auth fix merged the same evening it posted; and &mdash; the marquee &mdash; a Google maintainer merged the <code>gson</code> fix into <code>google/gson</code> after running it through Google&rsquo;s full internal test suite first (a library with 1B+ downloads). Ecosystems: TypeScript · Python · Rust · Go · Java — including GitHub&rsquo;s own <code>gh</code> CLI and the MCP reference SDK. Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim a perfect catch rate &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything. Since then: the <code>git-machete</code> fix reached final review (&ldquo;mostly ready to go&rdquo;), the <code>szio</code> fix posted 26 hours after the bug was filed &mdash; and the same hostile-verification discipline opened a second front: <b style="color:var(--white)">refuting other agents&rsquo; green-CI pull requests</b> (see REFUTE, below).</p>
+  <p class="proof-sub" style="text-align:left;margin:14px 0 0"><b style="color:var(--ok)">Four merges landed:</b> a Bazel maintainer merged the <code>buildtools</code> fix into <code>bazelbuild:main</code> (Google/Bazel core tooling); the FastMCP auth fix merged the same evening it posted; and &mdash; the marquee &mdash; a Google maintainer merged the <code>gson</code> fix into <code>google/gson</code> after running it through Google&rsquo;s full internal test suite first (a library with 1B+ downloads). Ecosystems: TypeScript · Python · Rust · Go · Java — including GitHub&rsquo;s own <code>gh</code> CLI and the MCP reference SDK. Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim a perfect catch rate &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything. The fourth merge landed 07-25: a Sollumz maintainer merged the <code>szio</code> fix <b style="color:var(--white)">six hours after a user filed the bug</b> &mdash; and it was the <em>second</em> version of that fix, because the verifier killed the first one for silently corrupting data while all 291 tests passed. Also in flight: <code>superfile</code> (a 1.36GB memory blowup traced to a mis-parsed video header), <code>QuantEcon.py</code>, and <code>git-machete</code> at &ldquo;mostly ready to go.&rdquo; Meanwhile the same hostile-verification discipline opened a second front: <b style="color:var(--white)">refuting other agents&rsquo; green-CI pull requests</b> (see REFUTE, below).</p>
 
   <div class="callout">
     <h3>A passing test suite lied — and the verifier caught it.</h3>
@@ -421,15 +421,54 @@ footer a:hover{color:var(--cyan)}
         <span class="date">2026-07-25</span>
         <span class="repo">Sollumz/szio #1217</span>
         <span class="badge lang">Python</span>
-        <span class="badge open">PR open</span>
+        <span class="badge" style="color:var(--ground);background:var(--ok);border-color:var(--ok);font-weight:600">&#10003; MERGED</span>
         <span class="badge caught">&#10003; verifier caught</span>
       </div>
       <h3>All 291 tests passed &mdash; and the fix was still silently corrupting a matrix shape the suite never checks</h3>
       <p>Sollumz (the standard GTA&nbsp;V Blender toolchain) crashed importing any model whose <code>CompositeTransform</code> used tabs: the matrix parser in <code>szio</code> split rows on literal 3-space runs and values on single spaces, so tab-delimited files died with <code>ValueError: could not convert string to float: '0\t\t\t\t\t0'</code>. Scouted 5 hours after a user filed it, reproduced byte-identical, root-caused, fixed with tests &mdash; PR posted 26 hours after the issue opened, race-clean the whole way.</p>
       <div class="catch"><b>Catch &mdash; the false green, again:</b> the doer&rsquo;s first fix (flat whitespace tokenization) passed the <b style="color:var(--white)">entire 291-test suite green</b>. The adversarial verifier corpus-diffed old-vs-new over the repo&rsquo;s own fixtures and killed it: CodeWalker writes fragment bound matrices as <span class="em">4 rows &times; 3 columns</span>, and the flat fill silently smeared orientation and translation &mdash; demonstrated end-to-end through the public <code>Fragment</code> API, on files the project itself ships. No test asserted those values, so CI stayed green over live data corruption. v2 preserves per-row structure; both verifiers re-ran clean in pristine trees. The run also surfaced two latent bugs nobody had filed (a wrong return class, and a crash under the standalone numpy backend).</div>
+      <p style="font-size:13px;margin-top:8px"><b style="color:var(--ok)">Merged 07-25, six hours after the bug was filed:</b> a Sollumz maintainer merged it into <code>szio:main</code> (commit <code>5aa3d16</code>), auto-closing the Sollumz issue &mdash; the benchmark&rsquo;s fourth merge. Worth stating plainly: the version that merged is the <em>second</em> one. The first passed every test and would have shipped silent data corruption.</p>
       <div class="links">
         <a href="https://github.com/Sollumz/szio/pull/2" target="_blank" rel="noopener">Pull request #2 &rarr;</a>
         <a href="https://github.com/Sollumz/Sollumz/issues/1217" target="_blank" rel="noopener">Issue #1217 &rarr;</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-25</span>
+        <span class="repo">QuantEcon/QuantEcon.py #870</span>
+        <span class="badge lang">Python</span>
+        <span class="badge open">PR open</span>
+        <span class="badge caught">&#10003; verifier caught</span>
+      </div>
+      <h3>A download utility saved HTTP <span style="color:var(--white)">error pages</span> under the requested filename &mdash; and reported success</h3>
+      <p><code>fetch_nb_dependencies</code>, exported at the top level of QuantEcon.py (the standard computational-economics library), wrote whatever the server returned straight to disk and appended <code>True</code>. Ask for a file that isn&rsquo;t there and you get a 314&nbsp;KB HTML error page saved as <code>your-data.csv</code>, reported as fetched &mdash; the failure resurfaces later as a parse error somewhere unrelated. Four defects in ~30 lines: no <code>raise_for_status()</code>, no timeout, a file handle shadowing the loop variable, and <code>type(files) == list</code> sending tuples into the wrong branch.</p>
+      <div class="catch"><b>Catch &mdash; the test gap was ours:</b> the adversarial verifier mutation-tested our own new tests and found one that couldn&rsquo;t fail: reverting the default timeout to <code>None</code> (reintroducing the unbounded-hang bug) left the suite green, because we only asserted the <em>explicit</em> timeout path. Fixed by pinning the default. It also surfaced a consequence the issue never mentioned &mdash; with <code>overwrite=True</code> the old code <span class="em">destroyed a good local file</span>, replacing real data with the error page and still returning success. That is silent data loss, now disclosed in the PR.</div>
+      <p style="font-size:13px;margin-top:8px">A quieter echo of the same theme: the two pre-existing tests for this function <b style="color:var(--white)">passed by saving an error page</b> in any environment without network access &mdash; the bug passing its own test, in a third repo this week.</p>
+      <div class="links">
+        <a href="https://github.com/QuantEcon/QuantEcon.py/pull/905" target="_blank" rel="noopener">Pull request #905 &rarr;</a>
+        <a href="https://github.com/QuantEcon/QuantEcon.py/issues/870" target="_blank" rel="noopener">Issue #870 &rarr;</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-25</span>
+        <span class="repo">yorukot/superfile #1550</span>
+        <span class="badge lang">Go</span>
+        <span class="badge open">PR open</span>
+        <span class="badge caught">&#10003; verifier caught</span>
+      </div>
+      <h3>19&nbsp;GB of RAM eaten by a file manager &mdash; because Go&rsquo;s PE parser accepted a video as a COFF object</h3>
+      <p>A user reported superfile filling RAM and swap until the kernel killed it, just from scrolling past large videos, and blamed the exif reader. It wasn&rsquo;t exif. <code>GetBinaryArchitecture</code> runs on every file, and Go&rsquo;s <code>debug/pe</code> accepts files <span class="em">without</span> an <code>MZ</code> header as raw COFF objects &mdash; so an MP4&rsquo;s leading bytes get read as section and symbol counts, and the parser allocates against garbage offsets inside a 2&nbsp;GB file. One goroutine fires per cursor move, so a sweep multiplies it. The fix gates all three <code>debug/*</code> parsers behind a 4-byte magic check. Measured over 200 concurrent fetches: <b style="color:var(--white)">+1,357&nbsp;MB &rarr; +0.6&nbsp;MB</b>, 18s &rarr; 0.01s.</p>
+      <div class="catch"><b>Catch:</b> the verifier ran ~40 fixtures &mdash; real ELF and <code>.so</code>, cross-compiled PE, thin/byte-swapped/fat Mach-O, a clang-produced COFF object, permission-denied files, fifos &mdash; and found one honest parity gap: MZ-less RISC-V COFF objects would have <span class="em">lost their architecture label</span>. Three constants fixed it. It also measured the residual we chose to keep (a 2-byte magic collision still reaches the parser, ~5 in 65536 on random data), which is disclosed in the PR rather than quietly shipped.</div>
+      <p style="font-size:13px;margin-top:8px">Posted ~3 hours after the report. The repo&rsquo;s own AI reviewer looked at the change and returned &ldquo;no actionable comments&rdquo; &mdash; on a fix for a bug that AI review had never caught in the first place.</p>
+      <div class="links">
+        <a href="https://github.com/yorukot/superfile/pull/1552" target="_blank" rel="noopener">Pull request #1552 &rarr;</a>
+        <a href="https://github.com/yorukot/superfile/issues/1550" target="_blank" rel="noopener">Issue #1550 &rarr;</a>
       </div>
     </article>
 
@@ -710,7 +749,8 @@ footer a:hover{color:var(--cyan)}
     <div class="mcard">
       <h3>On deck</h3>
       <ul class="next">
-        <li><b>The fresh-bug vein:</b> the last two fix runs (git-machete, szio) were both found the same way — a user-reported bug <span class="em">hours old</span> in a moderately-popular repo, race-checked immediately. That beats mining <code>help wanted</code> backlogs, which attract contributor crowds; we&rsquo;ve retired the help-wanted-first advice that used to sit here.</li>
+        <li><b>The fresh-bug vein:</b> git-machete, szio and superfile were all found the same way — a user-reported bug <span class="em">hours old</span> in a moderately-popular repo, race-checked immediately. szio went from a stranger&rsquo;s report to merged upstream in six hours. That beats mining <code>help wanted</code> backlogs, which attract contributor crowds; we&rsquo;ve retired the help-wanted-first advice that used to sit here.</li>
+        <li><b>Maintainer-filed audit items</b> are a second vein worth working: QuantEcon&rsquo;s <code>#870</code> arrived with acceptance criteria attached — an invitation rather than a race, and a clear signal the fix is wanted.</li>
         <li><b>Proven-friendly repos first:</b> maintainers who&rsquo;ve merged our work (fastmcp, gson, buildtools, tenacity, croniter, tomlkit — and now the Sollumz org) get scouted before strangers. Landing odds are part of the scouting gate.</li>
         <li><b>A do-not-post list, honored:</b> some projects (pallets/*, servo/*) have said no to AI contributions. We don&rsquo;t post there — reproducibility doesn&rsquo;t override a maintainer&rsquo;s policy.</li>
         <li><b>More refute runs</b> — the agent-PR flood is growing faster than the bug backlog, and the loop-engineer arc shows why a refute needs to become a blocking test, not just a comment.</li>
@@ -719,8 +759,9 @@ footer a:hover{color:var(--cyan)}
     <div class="mcard">
       <h3>The claim, stated plainly</h3>
       <ul>
-        <li><b style="color:var(--ok)">Three merged, a fourth in final review</b> — Google/Bazel core tooling (<code>buildtools</code>), the FastMCP auth layer (same-day merge, issue reporter endorsing the fix), <code>google/gson</code> (a Google maintainer merged it after running Google&rsquo;s full internal test suite), and <code>git-machete</code> at &ldquo;mostly ready to go.&rdquo; Real maintainers reviewed and accepted Coretexa-verified fixes. Distribution, not just verification.</li>
-        <li>Ten fix runs: <b>nine verifier catches</b> — two false-green test suites (rust-url, szio), an un-reloadable "fix", a locale-dependent encoding crash, overstated evidence, an overstated blast radius, a misstated regression scope — <b>and one honest first-pass-correct</b> run, reported as such.</li>
+        <li><b style="color:var(--ok)">Four merged</b> — Google/Bazel core tooling (<code>buildtools</code>), the FastMCP auth layer (same-day merge, issue reporter endorsing the fix), <code>google/gson</code> (a Google maintainer merged it after running Google&rsquo;s full internal test suite), and <code>szio</code> (merged six hours after the bug was filed). Three more in review, including <code>git-machete</code> at &ldquo;mostly ready to go.&rdquo; Real maintainers reviewed and accepted Coretexa-verified fixes. Distribution, not just verification.</li>
+        <li>Twelve fix runs: <b>eleven verifier catches</b> — three false-green test suites (rust-url, szio, QuantEcon), a mis-parsed binary header eating 1.36GB, an un-reloadable "fix", a locale-dependent encoding crash, overstated evidence, an overstated blast radius, a misstated regression scope — <b>and one honest first-pass-correct</b> run, reported as such.</li>
+        <li><b>Twice the verifier caught our own tests, not our code</b> — a green suite that cannot fail is worth nothing, so a fix ships only once its test has proven it can fail.</li>
         <li><b>Five bot PRs refuted</b> — each one green in CI and cleared by its AI reviewers before our verifier broke it with a deterministic repro. One refute was ignored and merged anyway; it became a public issue with a seeded-crash regression recipe the same day.</li>
         <li>Across TypeScript, Python, Rust, Go, and Java &mdash; including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, Google&rsquo;s gson, and the FastMCP auth layer. The protocol isn&rsquo;t tied to one stack.</li>
         <li>The value isn't "AI wrote a patch." It's <b>a second actor stopped a bad one from closing</b> — and, when there was nothing to stop, said so.</li>
