@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CORETEXA — Proof · verification benchmark</title>
-<meta name="description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by two independent verifiers before it ships — one that reproduces the bug, one whose only job is to refute the fix. 12 fix runs, 11 verifier catches, 5 agent-authored pull requests refuted, 0 self-closes.">
+<meta name="description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by two independent verifiers before it ships — one that reproduces the bug, one whose only job is to refute the fix. 12 fix runs, 11 verifier catches, 5 agent-authored pull requests refuted, 0 self-closes &mdash; and one refutation the maintainer merged past is now fixed upstream.">
   <link rel="canonical" href="https://coretexa.dev/proof.html">
   <meta property="og:site_name" content="Coretexa">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://coretexa.dev/proof.html">
   <meta property="og:title" content="Coretexa proof log — 12 fix runs, 11 verifier catches">
-  <meta property="og:description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by two independent verifiers before it ships — one that reproduces the bug, one whose only job is to refute the fix. 12 fix runs, 11 verifier catches, 5 agent-authored pull requests refuted, 0 self-closes.">
+  <meta property="og:description" content="A living log of Coretexa run against real open-source bugs. Every fix is checked by two independent verifiers before it ships — one that reproduces the bug, one whose only job is to refute the fix. 12 fix runs, 11 verifier catches, 5 agent-authored pull requests refuted, 0 self-closes &mdash; and one refutation the maintainer merged past is now fixed upstream.">
   <meta property="og:image" content="https://coretexa.dev/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -405,7 +405,7 @@ footer a:hover{color:var(--cyan)}
 
   <div class="score">
     <div class="cell"><div class="k">Fix runs</div><div class="v">12</div></div>
-    <div class="cell"><div class="k">Bot PRs refuted</div><div class="v">5</div></div>
+    <div class="cell"><div class="k">Bot PRs refuted</div><div class="v">5<small> / 1 fixed upstream</small></div></div>
     <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">11<small>/12</small></div></div>
     <div class="cell"><div class="k">First-pass-correct</div><div class="v">1</div></div>
     <div class="cell"><div class="k">Self-closes</div><div class="v">0</div></div>
@@ -690,16 +690,17 @@ footer a:hover{color:var(--cyan)}
     <article class="entry">
       <span class="corner tl"></span><span class="corner br"></span>
       <div class="top">
-        <span class="date">2026-07-24</span>
-        <span class="repo">SollanSystems/loop-engineer PR #80 &rarr; issue #81</span>
+        <span class="date">2026-07-24 &rarr; 07-25</span>
+        <span class="repo">SollanSystems/loop-engineer PR #80 &rarr; issue #81 &rarr; PR #89</span>
         <span class="badge lang">Python</span>
-        <span class="badge amber" style="color:var(--amber);border-color:var(--amber)">merged anyway &mdash; escalated</span>
+        <span class="badge caught">&#10003; escalated &mdash; fixed upstream</span>
       </div>
-      <h3>Refuted, ignored, merged &mdash; so the refute became an issue with a seeded-crash repro</h3>
-      <p>A Copilot-authored PR promised filesystem-non-mutating reads, but only delivered on cleanly-closed stores: with a crash-left <code>events.db-wal</code>, a read still creates an <code>events.db-shm</code> sidecar &mdash; and the PR&rsquo;s own regression test only builds clean stores, so CI can&rsquo;t see it. We posted the refute with a deterministic repro. The maintainer merged two days later: zero commits after the comment, no reply. Same day, we re-verified the leak against merged <code>main</code> and filed a standalone issue with a script that seeds the crash state &mdash; so the next fix has to beat a real test, not a green one.</p>
+      <h3>Refuted, ignored, merged &mdash; then the issue we filed was fixed upstream</h3>
+      <p>A Copilot-authored PR promised filesystem-non-mutating reads, but only delivered on cleanly-closed stores: with a crash-left <code>events.db-wal</code>, a read still creates an <code>events.db-shm</code> sidecar &mdash; and the PR&rsquo;s own regression test only builds clean stores, so CI can&rsquo;t see it. We posted the refute with a deterministic repro. The maintainer merged two days later: zero commits after the comment, no reply. Same day, we re-verified the leak against merged <code>main</code> and filed a standalone issue with a script that seeds the crash state &mdash; so the next fix has to beat a real test, not a green one. <b style="color:var(--ok)">On 07-25 the maintainer shipped that fix.</b> PR #89 reads crash-left WAL stores through a temp copy, and its description rejects both shortcuts the issue named &mdash; <code>immutable=1</code> silently drops WAL frames, checkpoint-on-open is a write. Six regression tests, with a negative control proving them red on unfixed <code>main</code>. Issue #81 closed as completed. The refutation was correct the first time; it only needed to be somewhere a merge couldn&rsquo;t scroll past it. <span style="color:var(--ink-dim)">The fix is the maintainer&rsquo;s, not ours &mdash; it is not counted as a merge above.</span></p>
       <div class="links">
         <a href="https://github.com/SollanSystems/loop-engineer/pull/80" target="_blank" rel="noopener">The refute on PR #80 &rarr;</a>
         <a href="https://github.com/SollanSystems/loop-engineer/issues/81" target="_blank" rel="noopener">Follow-up issue #81 &rarr;</a>
+        <a href="https://github.com/SollanSystems/loop-engineer/pull/89" target="_blank" rel="noopener">The upstream fix, PR #89 &rarr;</a>
       </div>
     </article>
 

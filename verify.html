@@ -236,6 +236,7 @@ RESULT: -shm sidecar created by a read? <span class="r">True</span></pre>
     </div>
     <p class="muted" style="margin-top:18px;font-size:14.5px">Six live Copilot PRs. Five correct fixes cleared, one hidden defect caught — with a reproduction. The gate you can trust <em>because</em> it doesn't cry wolf.</p>
     <p class="muted" style="margin-top:12px;font-size:14.5px"><b>Epilogue — why this should be a status check:</b> the refuted PR was merged anyway two days later, unchanged, on green CI. The leak is now in <code>main</code>, re-verified against the merge commit, and escalated to <a href="https://github.com/SollanSystems/loop-engineer/issues/81" target="_blank" rel="noopener">issue #81</a> with a repro that seeds the crash state the PR&rsquo;s own test never builds. A comment is easy to scroll past. A failing check isn&rsquo;t.</p>
+    <p class="muted" style="margin-top:10px;font-size:14.5px"><b><span class="ok">Resolved 2026-07-25:</span></b> the maintainer fixed it. <a href="https://github.com/SollanSystems/loop-engineer/pull/89" target="_blank" rel="noopener">PR #89</a> now reads crash-left WAL stores through a temp copy &mdash; rejecting both shortcuts the issue named (<code>immutable=1</code> silently drops WAL frames; checkpoint-on-open is a write) &mdash; and adds six regression tests with a negative control proving them red on unfixed <code>main</code>. Issue #81 closed as completed. The refute was right; it needed a place a merge couldn&rsquo;t scroll past.</p>
   </div>
 </section>
 
