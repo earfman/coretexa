@@ -223,6 +223,7 @@ RESULT: -shm sidecar created by a read? <span class="r">True</span></pre>
       <span class="chip"><b>CLEARED</b> · aodn/aodn_cloud_optimised #316</span>
     </div>
     <p class="muted" style="margin-top:18px;font-size:14.5px">Six live Copilot PRs. Five correct fixes cleared, one hidden defect caught — with a reproduction. The gate you can trust <em>because</em> it doesn't cry wolf.</p>
+    <p class="muted" style="margin-top:12px;font-size:14.5px"><b>Epilogue — why this should be a status check:</b> the refuted PR was merged anyway two days later, unchanged, on green CI. The leak is now in <code>main</code>, re-verified against the merge commit, and escalated to <a href="https://github.com/SollanSystems/loop-engineer/issues/81" target="_blank" rel="noopener">issue #81</a> with a repro that seeds the crash state the PR&rsquo;s own test never builds. A comment is easy to scroll past. A failing check isn&rsquo;t.</p>
   </div>
 </section>
 

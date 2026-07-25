@@ -389,22 +389,23 @@ footer a:hover{color:var(--cyan)}
   <div class="sec-tag kicker"><span class="num">PROOF</span> verification benchmark · a living log</div>
   <h1>We let a second agent <span class="hl">try to break</span> our own fixes.</h1>
   <p class="sub">Coretexa is the rule that the agent which does the work can't close it. This is the receipt: every time we run the loop against a real open-source bug, an independent verifier tries to refute the fix before it ships. Here is what it caught.</p>
-  <p class="updated">last updated <b>2026-07-24</b> · <span class="live">● live</span> — appended as runs happen</p>
+  <p class="updated">last updated <b>2026-07-25</b> · <span class="live">● live</span> — appended as runs happen</p>
 
   <div class="score">
-    <div class="cell"><div class="k">Tickets run</div><div class="v">8</div></div>
-    <div class="cell"><div class="k">Verified</div><div class="v">8</div></div>
-    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">7<small>/8</small></div></div>
+    <div class="cell"><div class="k">Fix runs</div><div class="v">10</div></div>
+    <div class="cell"><div class="k">Bot PRs refuted</div><div class="v">5</div></div>
+    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">9<small>/10</small></div></div>
     <div class="cell"><div class="k">First-pass-correct</div><div class="v">1</div></div>
     <div class="cell"><div class="k">Self-closes</div><div class="v">0</div></div>
-    <div class="cell hero-cell"><div class="k">Merged</div><div class="v">3<small> / 8 PRs</small></div></div>
+    <div class="cell hero-cell"><div class="k">Merged</div><div class="v">3<small> +1 in review</small></div></div>
   </div>
-  <p class="proof-sub" style="text-align:left;margin:14px 0 0"><b style="color:var(--ok)">Three merges landed:</b> a Bazel maintainer merged the <code>buildtools</code> fix into <code>bazelbuild:main</code> (Google/Bazel core tooling); the FastMCP auth fix merged the same evening it posted; and &mdash; the marquee &mdash; a Google maintainer merged the <code>gson</code> fix into <code>google/gson</code> after running it through Google&rsquo;s full internal test suite first (a library with 1B+ downloads). Ecosystems: TypeScript · Python · Rust · Go · Java — including GitHub&rsquo;s own <code>gh</code> CLI and the MCP reference SDK. Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim 8/8 &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything.</p>
+  <p class="proof-sub" style="text-align:left;margin:14px 0 0"><b style="color:var(--ok)">Three merges landed:</b> a Bazel maintainer merged the <code>buildtools</code> fix into <code>bazelbuild:main</code> (Google/Bazel core tooling); the FastMCP auth fix merged the same evening it posted; and &mdash; the marquee &mdash; a Google maintainer merged the <code>gson</code> fix into <code>google/gson</code> after running it through Google&rsquo;s full internal test suite first (a library with 1B+ downloads). Ecosystems: TypeScript · Python · Rust · Go · Java — including GitHub&rsquo;s own <code>gh</code> CLI and the MCP reference SDK. Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim a perfect catch rate &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything. Since then: the <code>git-machete</code> fix reached final review (&ldquo;mostly ready to go&rdquo;), the <code>szio</code> fix posted 26 hours after the bug was filed &mdash; and the same hostile-verification discipline opened a second front: <b style="color:var(--white)">refuting other agents&rsquo; green-CI pull requests</b> (see REFUTE, below).</p>
 
   <div class="callout">
     <h3>A passing test suite lied — and the verifier caught it.</h3>
     <p>Fixing a panic in <code>rust-url</code> (the URL crate nearly every Rust program depends on), the first fix made the project's <b style="color:var(--white)">entire Web Platform Test suite pass green</b>. It was still wrong: it silently dropped Windows drive letters, turning <code>file:///a:/..</code> into <code>file:///</code>. The bundled test data had no case for it, so the green was a false green.</p>
     <p>The independent verifier didn't trust the green. It ran a differential sweep against the WHATWG reference, caught the regression, and rejected the fix. The doer narrowed it; the second pass verified clean. <b style="color:var(--amber)">That is the entire point of Coretexa</b> — the actor that did the work was not allowed to close it.</p>
+    <p style="font-size:13px"><b>Honest postscript (07-24):</b> Servo declined the PR &mdash; &ldquo;the Servo project does not currently allow AI contributions.&rdquo; A policy call, theirs to make; we logged it as <code>rejected-policy</code>, added <code>servo/*</code> to our do-not-post list, and the catch above stands on its own merits. And the pattern repeated: on 07-25 the very same false-green failure mode was caught again, in <code>szio</code> &mdash; a fix that passed all 291 tests and was still silently corrupting data (first entry in the log below).</p>
   </div>
 </header>
 
@@ -413,6 +414,43 @@ footer a:hover{color:var(--cyan)}
 <section class="wrap">
   <div class="sec-tag"><span class="num">LOG</span> the run history</div>
   <div class="log">
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-25</span>
+        <span class="repo">Sollumz/szio #1217</span>
+        <span class="badge lang">Python</span>
+        <span class="badge open">PR open</span>
+        <span class="badge caught">&#10003; verifier caught</span>
+      </div>
+      <h3>All 291 tests passed &mdash; and the fix was still silently corrupting a matrix shape the suite never checks</h3>
+      <p>Sollumz (the standard GTA&nbsp;V Blender toolchain) crashed importing any model whose <code>CompositeTransform</code> used tabs: the matrix parser in <code>szio</code> split rows on literal 3-space runs and values on single spaces, so tab-delimited files died with <code>ValueError: could not convert string to float: '0\t\t\t\t\t0'</code>. Scouted 5 hours after a user filed it, reproduced byte-identical, root-caused, fixed with tests &mdash; PR posted 26 hours after the issue opened, race-clean the whole way.</p>
+      <div class="catch"><b>Catch &mdash; the false green, again:</b> the doer&rsquo;s first fix (flat whitespace tokenization) passed the <b style="color:var(--white)">entire 291-test suite green</b>. The adversarial verifier corpus-diffed old-vs-new over the repo&rsquo;s own fixtures and killed it: CodeWalker writes fragment bound matrices as <span class="em">4 rows &times; 3 columns</span>, and the flat fill silently smeared orientation and translation &mdash; demonstrated end-to-end through the public <code>Fragment</code> API, on files the project itself ships. No test asserted those values, so CI stayed green over live data corruption. v2 preserves per-row structure; both verifiers re-ran clean in pristine trees. The run also surfaced two latent bugs nobody had filed (a wrong return class, and a crash under the standalone numpy backend).</div>
+      <div class="links">
+        <a href="https://github.com/Sollumz/szio/pull/2" target="_blank" rel="noopener">Pull request #2 &rarr;</a>
+        <a href="https://github.com/Sollumz/Sollumz/issues/1217" target="_blank" rel="noopener">Issue #1217 &rarr;</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-21</span>
+        <span class="repo">VirtusLab/git-machete #1754</span>
+        <span class="badge lang">Python</span>
+        <span class="badge open">in final review</span>
+        <span class="badge caught">&#10003; verifier caught</span>
+      </div>
+      <h3><code>discover</code>/<code>status</code> showed a <span style="color:var(--white)">different branch tree</span> in every worktree</h3>
+      <p>git-machete inferred branch structure from the HEAD reflog &mdash; which is <span class="em">per-worktree</span> in git &mdash; so the same repo produced different discovered trees depending on which worktree you ran it from. The fix reads reflogs across all worktree HEADs. Found the same way as the szio bug: a fresh user-reported issue, hours old, race-checked immediately.</p>
+      <div class="catch"><b>Catch:</b> the fix replaced a <code>git</code> subprocess call with direct file reads &mdash; and the hostile verifier caught that this silently dropped the subprocess&rsquo;s implicit strict-UTF-8 decode. On a non-UTF-8-locale environment (minimal containers, <code>LC_ALL=C</code> CI), one accented committer name in a reflog would have crashed the command &mdash; a regression the doer&rsquo;s green tests never touched. Fixed with an explicit <code>utf-8</code>/<code>surrogateescape</code> read that is strictly more robust than the old path.</div>
+      <p style="font-size:13px;margin-top:8px"><b style="color:var(--ok)">In review:</b> the maintainer&rsquo;s verdict on 07-24 was &ldquo;mostly ready to go&rdquo;; both final review items were addressed the same day. If it lands, it&rsquo;s merge four.</p>
+      <div class="links">
+        <a href="https://github.com/VirtusLab/git-machete/pull/1755" target="_blank" rel="noopener">Pull request #1755 &rarr;</a>
+        <a href="https://github.com/VirtusLab/git-machete/issues/1754" target="_blank" rel="noopener">Issue #1754 &rarr;</a>
+      </div>
+    </article>
 
     <article class="entry">
       <span class="corner tl"></span><span class="corner br"></span>
@@ -568,6 +606,75 @@ footer a:hover{color:var(--cyan)}
 <div class="divider"></div>
 
 <section class="wrap">
+  <div class="sec-tag"><span class="num">REFUTE</span> verifying other agents&rsquo; pull requests</div>
+  <p class="proof-sub" style="text-align:left;margin:0 0 18px">A second front, opened 07-24. AI-authored PRs now merge on green CI &mdash; written by one bot, reviewed by another, rubber-stamped by a human. We point the same hostile verifier at <b style="color:var(--white)">other agents&rsquo; open PRs</b>: reproduce the claim in a pristine tree, then try to break it. A finding posts only when the failure reproduces deterministically &mdash; and every one below survived that gate <span class="em">after</span> the PR&rsquo;s own CI passed and its AI reviewers signed off. This discipline, packaged for your repo, is <a href="/verify.html" style="color:var(--cyan)">the gate &rarr;</a></p>
+  <div class="log">
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-24</span>
+        <span class="repo">sqlfluff/sqlfluff PR #8187</span>
+        <span class="badge lang">Python</span>
+        <span class="badge caught">&#10003; refuted &mdash; novel</span>
+      </div>
+      <h3>A parser &ldquo;fix&rdquo; that silently un-lints the rest of the file</h3>
+      <p>An <code>Anything()</code> fallback in the sparksql <code>SET</code> grammar swallows the <span class="em">next statement</span> when a SET line lacks a terminator &mdash; <code>DROP TABLE prod.customers;</code> gets absorbed as raw tokens no lint rule ever visits. On merge-base the file correctly reports unparsable; on the PR head: zero violations. CI was green &mdash; 576/576 dialect tests &mdash; because no fixture omits its terminator. The repo&rsquo;s AI reviewer looked at the exact line twice: &ldquo;No issues found across 5 files, confidence 5/5.&rdquo; The human reviewer caught a design overreach but not this. Reproduced twice independently, four swallowed-statement shapes, posted as a review comment.</p>
+      <div class="links"><a href="https://github.com/sqlfluff/sqlfluff/pull/8187" target="_blank" rel="noopener">PR #8187 review comment &rarr;</a></div>
+    </article>
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-24</span>
+        <span class="repo">sqlfluff/sqlfluff PR #8201</span>
+        <span class="badge lang">Python</span>
+        <span class="badge caught">&#10003; refuted &mdash; novel</span>
+      </div>
+      <h3>The PR&rsquo;s own scenario still failed in one dialect &mdash; and rewrote a query to return different rows</h3>
+      <p>An ST05 fix used two different identifier normalizers on the two sides of a reservation check. They agree in 27 dialects and disagree in exactly one: bigquery, where the PR&rsquo;s own example still produced the unfixed output &mdash; an alias silently rebinding from a physical table to a generated CTE. Executed against a real engine: <code>[(10,),(20,),(30,)]</code> before, <code>[(0,)]</code> after. No error, different rows. CI: 2,471 tests green; new fixtures covered three dialects &mdash; not the one where the normalizers disagree. Five Codex review passes and one &ldquo;confidence 5/5&rdquo; cubic pass had cleared it.</p>
+      <div class="links"><a href="https://github.com/sqlfluff/sqlfluff/pull/8201" target="_blank" rel="noopener">PR #8201 review comment &rarr;</a></div>
+    </article>
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-24</span>
+        <span class="repo">SollanSystems/loop-engineer PR #80 &rarr; issue #81</span>
+        <span class="badge lang">Python</span>
+        <span class="badge amber" style="color:var(--amber);border-color:var(--amber)">merged anyway &mdash; escalated</span>
+      </div>
+      <h3>Refuted, ignored, merged &mdash; so the refute became an issue with a seeded-crash repro</h3>
+      <p>A Copilot-authored PR promised filesystem-non-mutating reads, but only delivered on cleanly-closed stores: with a crash-left <code>events.db-wal</code>, a read still creates an <code>events.db-shm</code> sidecar &mdash; and the PR&rsquo;s own regression test only builds clean stores, so CI can&rsquo;t see it. We posted the refute with a deterministic repro. The maintainer merged two days later: zero commits after the comment, no reply. Same day, we re-verified the leak against merged <code>main</code> and filed a standalone issue with a script that seeds the crash state &mdash; so the next fix has to beat a real test, not a green one.</p>
+      <div class="links">
+        <a href="https://github.com/SollanSystems/loop-engineer/pull/80" target="_blank" rel="noopener">The refute on PR #80 &rarr;</a>
+        <a href="https://github.com/SollanSystems/loop-engineer/issues/81" target="_blank" rel="noopener">Follow-up issue #81 &rarr;</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-24</span>
+        <span class="repo">FalkorDB #109 · elastic/apm-server #21556</span>
+        <span class="badge lang">Python · Go</span>
+        <span class="badge caught">&#10003; refuted &times;2</span>
+      </div>
+      <h3>Two more, same shape: tests weakened until the regression passes</h3>
+      <p>A FalkorDB &ldquo;stabilize tests&rdquo; PR relaxed an assertion so that a possible Python 3.11 label-add regression passes green &mdash; reproduced both ways: correct code passes old and new tests, regressed code fails the original and <span class="em">passes the weakened one</span>. And on elastic/apm-server, a Copilot flaky-test fix left <code>RawFields</code> nil, deterministically breaking four downstream callers &mdash; posted as a help-first steer toward the bot&rsquo;s own proposed upstream fix.</p>
+      <div class="links">
+        <a href="https://github.com/FalkorDB/FalkorDB/pull/109" target="_blank" rel="noopener">FalkorDB PR #109 &rarr;</a>
+        <a href="https://github.com/elastic/apm-server/pull/21556" target="_blank" rel="noopener">apm-server PR #21556 &rarr;</a>
+      </div>
+    </article>
+
+  </div>
+  <div class="honest"><b>One we verified and did not post:</b> a camunda bpmnlint finding was confirmed at the code level &mdash; then we found another agent had already surfaced the same defect in-thread an hour earlier. Posting would have been noise wearing a verification badge. Dropped, logged, counted nowhere above.</div>
+</section>
+
+<div class="divider"></div>
+
+<section class="wrap">
   <div class="sec-tag"><span class="num">METHOD</span> how a run works</div>
   <div class="method-grid">
     <div class="mcard">
@@ -586,6 +693,7 @@ footer a:hover{color:var(--cyan)}
         <li><b>Verifier catches</b> — work that would have shipped wrong. The number that proves the protocol.</li>
         <li><b>Self-closes: 0</b> — an invariant, enforced by actor identity, not an outcome.</li>
         <li><b>Merges</b> — a contributor metric, tracked but not the point.</li>
+        <li><b>Refutes</b> — the same hostile pass pointed at other agents&rsquo; green PRs; posted only when the break reproduces deterministically, dropped silently when someone else surfaced it first.</li>
         <li>Scope is honest: bugs needing a live cloud account are out of scope, not failures.</li>
         <li>We do <b>not</b> spam PRs — we verify privately and open only clean ones.</li>
       </ul>
@@ -602,16 +710,18 @@ footer a:hover{color:var(--cyan)}
     <div class="mcard">
       <h3>On deck</h3>
       <ul class="next">
-        <li><b>Recent, active MCP-ecosystem repos</b> — young servers and SDKs with real users and mechanical bugs, where review actually happens. The ts-sdk run proved the fit.</li>
-        <li><b>Scouting gate (sharpened):</b> not just &ldquo;is the issue unclaimed&rdquo; but &ldquo;is the fix approach uncontested.&rdquo; swift-argument-parser was dropped from the queue — its entire bug backlog is design-blocked by maintainer debate.</li>
-        <li><b>Scouting note:</b> favor issues a project has marked <code>help wanted</code>. Big repos (e.g. cli/cli) auto-close PRs against un-sanctioned issues regardless of quality — &ldquo;unclaimed&rdquo; isn&rsquo;t the same as &ldquo;wanted.&rdquo;</li>
+        <li><b>The fresh-bug vein:</b> the last two fix runs (git-machete, szio) were both found the same way — a user-reported bug <span class="em">hours old</span> in a moderately-popular repo, race-checked immediately. That beats mining <code>help wanted</code> backlogs, which attract contributor crowds; we&rsquo;ve retired the help-wanted-first advice that used to sit here.</li>
+        <li><b>Proven-friendly repos first:</b> maintainers who&rsquo;ve merged our work (fastmcp, gson, buildtools, tenacity, croniter, tomlkit — and now the Sollumz org) get scouted before strangers. Landing odds are part of the scouting gate.</li>
+        <li><b>A do-not-post list, honored:</b> some projects (pallets/*, servo/*) have said no to AI contributions. We don&rsquo;t post there — reproducibility doesn&rsquo;t override a maintainer&rsquo;s policy.</li>
+        <li><b>More refute runs</b> — the agent-PR flood is growing faster than the bug backlog, and the loop-engineer arc shows why a refute needs to become a blocking test, not just a comment.</li>
       </ul>
     </div>
     <div class="mcard">
       <h3>The claim, stated plainly</h3>
       <ul>
-        <li><b style="color:var(--ok)">Three merged</b> — Google/Bazel core tooling (<code>buildtools</code>), the FastMCP auth layer (same-day merge, issue reporter endorsing the fix), and <code>google/gson</code> (a Google maintainer merged it after running Google&rsquo;s full internal test suite). Real maintainers reviewed and accepted Coretexa-verified fixes. Distribution, not just verification.</li>
-        <li>Eight runs: <b>seven verifier catches</b> — a false-green test suite, an un-reloadable "fix", overstated evidence, an overstated blast radius, a misstated regression scope — <b>and one honest first-pass-correct</b> run, reported as such.</li>
+        <li><b style="color:var(--ok)">Three merged, a fourth in final review</b> — Google/Bazel core tooling (<code>buildtools</code>), the FastMCP auth layer (same-day merge, issue reporter endorsing the fix), <code>google/gson</code> (a Google maintainer merged it after running Google&rsquo;s full internal test suite), and <code>git-machete</code> at &ldquo;mostly ready to go.&rdquo; Real maintainers reviewed and accepted Coretexa-verified fixes. Distribution, not just verification.</li>
+        <li>Ten fix runs: <b>nine verifier catches</b> — two false-green test suites (rust-url, szio), an un-reloadable "fix", a locale-dependent encoding crash, overstated evidence, an overstated blast radius, a misstated regression scope — <b>and one honest first-pass-correct</b> run, reported as such.</li>
+        <li><b>Five bot PRs refuted</b> — each one green in CI and cleared by its AI reviewers before our verifier broke it with a deterministic repro. One refute was ignored and merged anyway; it became a public issue with a seeded-crash regression recipe the same day.</li>
         <li>Across TypeScript, Python, Rust, Go, and Java &mdash; including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, Google&rsquo;s gson, and the FastMCP auth layer. The protocol isn&rsquo;t tied to one stack.</li>
         <li>The value isn't "AI wrote a patch." It's <b>a second actor stopped a bad one from closing</b> — and, when there was nothing to stop, said so.</li>
       </ul>
