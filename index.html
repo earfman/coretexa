@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CORETEXA — The accountability queue for AI-done work</title>
-<meta name="description" content="An open-source accountability queue for AI coding agents. The agent that does the work can't close it — a second agent verifies it against ground truth first. Postgres schema + MCP server. MIT.">
+<meta name="description" content="Agent-written pull requests arrive green. Coretexa reverts the source, keeps the pull request's own new tests, and runs them again — because a test that still passes without the fix was never a gate. Free GitHub Action, runs on your runner. MIT.">
   <link rel="canonical" href="https://coretexa.dev/">
   <meta property="og:site_name" content="Coretexa">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://coretexa.dev/">
   <meta property="og:title" content="Coretexa — your AI agent can’t close its own work">
-  <meta property="og:description" content="An open-source accountability queue for AI coding agents. The agent that does the work can't close it — a second agent verifies it against ground truth first. Postgres schema + MCP server. MIT.">
+  <meta property="og:description" content="Agent-written pull requests arrive green. Coretexa reverts the source, keeps the pull request's own new tests, and runs them again — because a test that still passes without the fix was never a gate. Free GitHub Action, runs on your runner. MIT.">
   <meta property="og:image" content="https://coretexa.dev/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -330,7 +330,7 @@ footer a:hover{color:var(--cyan)}
       <a href="/blog.html">Writing</a>
       <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener">GitHub</a>
     </div>
-    <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener" class="btn btn-primary desk">★ Star on GitHub</a>
+    <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary desk">Add the check</a>
     <button class="nav-toggle" id="navToggle" aria-label="Menu">≡</button>
   </div>
 </nav>
@@ -343,11 +343,17 @@ footer a:hover{color:var(--cyan)}
     <div>
       <div class="sec-tag kicker"><span class="num">SPEC</span> accountability protocol</div>
       <h1>Your AI agent <span class="hl">can't close</span> its own work.</h1>
-      <p class="sub">An open-source accountability queue for AI coding agents. The agent that does the work can't close it — a second agent verifies it against ground truth first.</p>
-      <p class="worksline">works with <span class="ok">Claude Code</span> · <span class="ok">Cursor</span> · any MCP agent — Postgres + MCP server · MIT</p>
+      <p class="sub">Agent-written pull requests arrive green. Coretexa puts the source back the way it was, leaves the pull request&rsquo;s own new tests in place, and runs them again &mdash; because a test that still passes without the fix was never a gate.</p>
+      <p class="worksline">runs on <span class="ok">your</span> CI runner &mdash; nothing executes on our infrastructure &middot; zero dependencies &middot; MIT</p>
       <div class="hero-cta">
-        <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener" class="btn btn-primary btn-lg">★ Star on GitHub</a>
-        <a href="#protocol" class="btn btn-ghost btn-lg">Read the protocol</a>
+        <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Add the check to your repo</a>
+        <a href="/proof.html" class="btn btn-ghost btn-lg">See what it caught</a>
+      </div>
+      <div style="margin-top:26px;border:1px solid var(--line);background:rgba(0,0,0,.22);padding:16px 18px;font-family:var(--mono);font-size:12.5px;line-height:1.85;overflow-x:auto">
+        <div style="color:var(--amber);letter-spacing:.09em;font-size:11px;margin-bottom:10px">REAL OUTPUT &middot; ioi-isr/cms&nbsp;#174</div>
+        <div style="color:var(--bad);font-weight:700">[!!] NO_GATE</div>
+        <div style="color:var(--ink)">3 of 5 behavioural changes in this PR can be reverted with all 5 of its<br>tests still passing. This PR&rsquo;s tests would pass without the fix.</div>
+        <div style="color:var(--ink-dim);margin-top:10px">run at head &nbsp;<span style="color:var(--ok)">PASS</span> &mdash; 5 passed<br>run with source reverted &nbsp;<span style="color:var(--bad)">PASS</span> &mdash; 5 passed &nbsp;<span style="color:var(--bad)">&larr; the finding</span></div>
       </div>
     </div>
 
