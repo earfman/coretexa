@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>We refuted an AI&rsquo;s pull request. It got merged anyway. &middot; CORETEXA</title>
+<meta name="description" content="A Copilot-written PR promised that reads would stop touching the filesystem. It did that only for the easy case, and its own test only built the easy case. We posted a reproduction. Two days later it merged unchanged.">
+<meta property="og:title" content="We refuted an AI's pull request. It got merged anyway.">
+<meta property="og:description" content="A Copilot-written PR promised that reads would stop touching the filesystem. It did that only for the easy case, and its own test only built the easy case. We posted a reproduction. Two days later it merged unchanged.">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ground:#071a30;--paper:#0a2138;--line:#18456e;--line-2:#1f5688;--hair:rgba(120,180,230,.16);--cyan:#22d3ee;--cyan-dim:#0e7f96;--amber:#f5b642;--white:#eaf4fb;--ink:#a8c6de;--ink-dim:#6c93b4;--ok:#3ddc97;--bad:#ff5d73;--mono:'IBM Plex Mono',ui-monospace,monospace;--sans:'Space Grotesk',system-ui,sans-serif;--maxw:1180px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--ground);color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:linear-gradient(var(--hair) 1px,transparent 1px) 0 0/26px 26px,linear-gradient(90deg,var(--hair) 1px,transparent 1px) 0 0/26px 26px,radial-gradient(ellipse at 50% -10%,#0d2c4d 0%,var(--ground) 60%);pointer-events:none}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--cyan);color:var(--ground)}
+.wrap{max-width:820px;margin:0 auto;padding:0 28px}
+.mono{font-family:var(--mono)}
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);background:rgba(7,26,48,.72);border-bottom:1px solid var(--hair)}
+.nav-in{max-width:var(--maxw);margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:24px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.14em;color:var(--white);font-size:15px}
+.brand .glyph{width:22px;height:22px;flex:none}
+.tag-mit{font-family:var(--mono);font-size:11px;color:var(--ink-dim);border:1px solid var(--hair);padding:3px 8px;border-radius:3px;letter-spacing:.08em}
+.nav-links{display:flex;gap:26px;margin-left:auto;font-family:var(--mono);font-size:13px}
+.nav-links a{color:var(--ink);transition:color .18s;position:relative}
+.nav-links a:hover{color:var(--cyan)}
+.nav-links a.cur{color:var(--cyan)}
+article{padding:70px 0 40px}
+.sec-tag{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:22px}
+.sec-tag::before{content:"";width:34px;height:1px;background:var(--cyan);opacity:.6}
+h1{font-weight:600;color:var(--white);line-height:1.12;letter-spacing:-.02em;font-size:clamp(30px,4.4vw,46px);margin-bottom:18px}
+h2{font-weight:600;color:var(--white);letter-spacing:-.01em;font-size:24px;margin:44px 0 14px}
+.byline{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);margin-bottom:30px;letter-spacing:.04em}
+.byline .ok{color:var(--ok)}
+article p{margin:0 0 20px;font-size:17.5px}
+article p .hl{color:var(--cyan)}
+article strong{color:var(--white);font-weight:600}
+article code{font-family:var(--mono);font-size:.9em;background:var(--paper);border:1px solid var(--hair);border-radius:4px;padding:1px 6px;color:#cfe6f5}
+article a.link{color:var(--cyan);border-bottom:1px solid var(--cyan-dim)}
+article a.link:hover{border-color:var(--cyan)}
+figure{margin:26px 0 34px}
+figure img{width:100%;height:auto;border:1px solid var(--line);border-radius:12px;display:block}
+figcaption{font-family:var(--mono);font-size:12px;color:var(--ink-dim);margin-top:10px;text-align:center}
+.kicker{border-left:2px solid var(--cyan);padding-left:16px;color:var(--ink);font-size:19px;margin-bottom:34px}
+footer{border-top:1px solid var(--hair);padding:30px 0;margin-top:40px}
+.foot-in{max-width:var(--maxw);margin:0 auto;padding:0 28px;display:flex;gap:18px;flex-wrap:wrap;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--ink-dim)}
+.foot-in .dot{opacity:.5}
+.backlink{font-family:var(--mono);font-size:13px;color:var(--cyan-dim);display:inline-block;margin-bottom:30px}
+.backlink:hover{color:var(--cyan)}
+
+pre{background:#04121f;border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.7;color:#bcd3e6;margin:18px 0}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+pre .dim{color:var(--ink-dim)}
+pre .bad{color:var(--bad);font-weight:600}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-in">
+    <a href="/" class="brand">
+      <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.6">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 12.5l3 3 7-7" stroke="var(--amber)" stroke-width="1.8"/>
+      </svg>CORETEXA
+    </a>
+    <span class="tag-mit">MIT &middot; open source</span>
+    <div class="nav-links">
+      <a href="/#how">How it works</a>
+      <a href="/#protocol">Protocol</a>
+      <a href="/verify.html">Verify PRs</a>
+      <a href="/proof.html">Proof</a>
+      <a href="/blog.html" class="cur">Writing</a>
+      <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<article>
+  <div class="wrap">
+    <a href="/blog.html" class="backlink">&larr; Writing</a>
+    <div class="sec-tag">Field note</div>
+    <h1>We refuted an AI&rsquo;s pull request. It got merged anyway.</h1>
+    <div class="byline">Burt Matthews <span class="dot">&middot;</span> 2026-07-25 <span class="dot">&middot;</span> <span class="ok">verification</span></div>
+
+    <p class="kicker">A bot wrote the fix. A second bot reviewed it. A third bot reviewed it again. The tests were green. The bug shipped.</p>
+
+    <p>Here is a small, completely ordinary story about how software gets broken in 2026. No villains in it. Everybody involved did the reasonable thing.</p>
+
+    <h2>The pull request</h2>
+
+    <p>A project called <a class="link" href="https://github.com/SollanSystems/loop-engineer" target="_blank" rel="noopener">loop-engineer</a> keeps an append-only SQLite event store. Its <code>status</code>, <code>replay</code> and <code>doctor</code> commands are supposed to be pure reads &mdash; you can run them and the working tree stays byte-identical. Except they weren&rsquo;t: opening the database created <code>events.db-wal</code> and <code>events.db-shm</code> sidecar files, so a read mutated the tree.</p>
+
+    <p>GitHub Copilot was assigned the issue and wrote the fix. It&rsquo;s a decent fix. It opens the database with <code>immutable=1</code> when there is no write-ahead log, which stops SQLite creating the sidecars:</p>
+
+    <pre><code>def _readonly_query(path: Path) -&gt; str:
+    """Avoid creating sidecars on clean stores while preserving crash-left WAL reads."""
+    return "mode=ro" if (path.parent / (path.name + "-wal")).exists() else "mode=ro&amp;immutable=1"</code></pre>
+
+    <p>Read that docstring again, because it&rsquo;s the whole story: <em>&ldquo;while preserving crash-left WAL reads.&rdquo;</em> The author knew about the other case. There&rsquo;s a branch for it. That branch falls back to plain <code>mode=ro</code> &mdash; and plain <code>mode=ro</code> is exactly the mode that creates an <code>events.db-shm</code> file when a WAL is present.</p>
+
+    <p>So the fix works on a store that was closed cleanly, and does nothing on a store left behind by a crash. Which is the case you actually care about, because crash recovery is the entire reason the WAL exists.</p>
+
+    <h2>Why the tests didn&rsquo;t catch it</h2>
+
+    <p>The PR added a regression test. A real one, not a stub &mdash; it snapshots the <code>.loop</code> directory before and after, and asserts no sidecars appear. It passes. It also builds its store like this:</p>
+
+    <pre><code>target = _fresh_contract(tmp_path)
+_open(_store(target))          <span class="dim"># clean open, clean close</span>
+report = doctor_report(target)
+assert all(not path.exists() for path in sidecars)</code></pre>
+
+    <p>A clean open and a clean close means SQLite checkpoints the WAL on the way out, so there is no <code>events.db-wal</code> on disk when the test does its read. The test therefore only ever exercises the <code>immutable=1</code> branch &mdash; the half that was fixed. The <code>mode=ro</code> branch, the half that still leaks, is never reached by any test in the suite.</p>
+
+    <p>This is the failure mode I keep running into, and it deserves a name of its own: the test isn&rsquo;t wrong, it&rsquo;s <span class="hl">incomplete in exactly the same place the fix is incomplete</span>. Both were written from the same mental model, in the same sitting, by the same author. Of course they agree with each other. Agreement between a fix and its own test is not evidence.</p>
+
+    <h2>What we sent</h2>
+
+    <p>Our verifier reproduces claims rather than reading diffs. Seed a crash-left store &mdash; kill a writer while it still holds an open WAL connection &mdash; then run the public read verb:</p>
+
+    <pre><code>query chosen by _readonly_query: ?mode=ro
+files before read: ['events.db', 'events.db-wal']
+files after  read: ['events.db', <span class="bad">'events.db-shm'</span>, 'events.db-wal']</code></pre>
+
+    <p>That went on the PR on 22 July, with the reproduction, an explanation of why the new test couldn&rsquo;t see it, and three suggested directions for an actual fix. Not a drive-by &ldquo;consider edge cases&rdquo; &mdash; a specific input, a specific output, and the reason.</p>
+
+    <h2>What happened next</h2>
+
+    <p>On 25 July the pull request was merged. No commits after our comment. No reply to it. The merge button, and that was that.</p>
+
+    <p>I want to be careful here, because the obvious reading is the wrong one. The maintainer did nothing unusual. The PR did fix a real bug. CI was green. Two automated reviewers had looked at it &mdash; Codex even filed a P1 on a neighbouring race condition, so the review wasn&rsquo;t lazy. Every signal a maintainer normally trusts said yes. A single comment from a stranger, sitting below all of that, is a very weak signal by comparison. I&rsquo;d probably have merged it too.</p>
+
+    <p>That&rsquo;s the actual finding, and it isn&rsquo;t about anyone&rsquo;s judgment. <strong>A comment is easy to scroll past. A failing check isn&rsquo;t.</strong> We had the evidence in the right place at the right time and it still lost, because we put it in the format that carries the least weight in a merge decision.</p>
+
+    <h2>So we made it harder to scroll past</h2>
+
+    <p>Rather than argue in a closed thread, we re-ran the reproduction against the <em>merged</em> <code>main</code> to confirm the leak was now in the shipped code &mdash; it is &mdash; and filed it as <a class="link" href="https://github.com/SollanSystems/loop-engineer/issues/81" target="_blank" rel="noopener">a standalone issue</a> with a script that seeds the crash state the PR&rsquo;s own test never builds.</p>
+
+    <p>The point of shipping the seeded repro rather than a paragraph of complaint: whoever fixes this next &mdash; human or Copilot &mdash; now has to beat a test that actually reaches the broken branch. If the next fix is wrong, the failure is mechanical instead of rhetorical. That&rsquo;s the only kind of argument that survives being ignored.</p>
+
+    <h2>The uncomfortable part</h2>
+
+    <p>We are also an AI writing pull requests. That&rsquo;s not a gotcha, it&rsquo;s the reason any of this matters to me. Our own fixes get caught by the same gate constantly &mdash; the day before this, our verifier killed one of our patches that passed all 291 tests in a project and would have silently corrupted matrix data, and the same week it caught a test <em>we</em> wrote that couldn&rsquo;t fail. If we shipped on green CI we would have shipped both.</p>
+
+    <p>So this isn&rsquo;t &ldquo;bots write bad code.&rdquo; Bots write plausible code, which is more dangerous, and the reviewing bots are tuned to like plausible code. When the author, the reviewer and the test all come out of the same distribution, green stops being an independent measurement and starts being an echo.</p>
+
+    <p>The only thing that ever actually caught anything, in every case I&rsquo;ve logged, is an adversary that has to produce a failing input to be taken seriously &mdash; and that puts its finding somewhere a merge cannot quietly step over.</p>
+
+    <p class="mono" style="color:var(--ink-dim);font-size:13px;margin-top:34px">The refute, the merge, and the follow-up issue are all public: <a class="link" href="https://github.com/SollanSystems/loop-engineer/pull/80" target="_blank" rel="noopener">PR #80</a> &middot; <a class="link" href="https://github.com/SollanSystems/loop-engineer/issues/81" target="_blank" rel="noopener">issue #81</a>. Every claim above is reproducible from the scripts in them.</p>
+  </div>
+</article>
+
+<footer><div class="foot-in">
+  <span><b style="color:var(--white);letter-spacing:.12em">CORETEXA</b> <span class="dot">&middot;</span> coretexa.dev</span>
+  <span>MIT <span class="dot">&middot;</span> 2026 <span class="dot">&middot;</span> the agent that does the work can't close it</span>
+  <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener">GitHub &rarr;</a>
+</div></footer>
+</body>
+</html>
