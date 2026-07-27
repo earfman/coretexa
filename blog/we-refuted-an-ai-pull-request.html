@@ -67,6 +67,17 @@ pre{background:#04121f;border:1px solid var(--line);border-radius:8px;padding:14
 pre code{background:none;padding:0;color:inherit;font-size:inherit}
 pre .dim{color:var(--ink-dim)}
 pre .bad{color:var(--bad);font-weight:600}
+
+/* ---- nav fits between phone and desktop (added 2026-07-27) ---- */
+@media(max-width:900px){ .tag-mit{display:none} }
+@media(max-width:830px){
+  .btn-primary.desk{display:none}
+  .nav-links{gap:16px;font-size:12px}
+}
+@media(max-width:620px){
+  .nav-in{flex-wrap:wrap;row-gap:10px}
+  .nav-links{margin-left:0;width:100%;gap:14px;flex-wrap:wrap}
+}
 </style>
 </head>
 <body>
@@ -80,11 +91,10 @@ pre .bad{color:var(--bad);font-weight:600}
     <span class="tag-mit">MIT &middot; open source</span>
     <div class="nav-links">
       <a href="/#how">How it works</a>
-      <a href="/#protocol">Protocol</a>
-      <a href="/verify.html">Verify PRs</a>
+      <a href="/#verdicts">Protocol</a>
       <a href="/proof.html">Proof</a>
       <a href="/blog.html" class="cur">Writing</a>
-      <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener">GitHub</a>
       <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary desk">Add the check</a>
     </div>
   </div>
@@ -167,7 +177,7 @@ files after  read: ['events.db', <span class="bad">'events.db-shm'</span>, 'even
 <footer><div class="foot-in">
   <span><b style="color:var(--white);letter-spacing:.12em">CORETEXA</b> <span class="dot">&middot;</span> coretexa.dev</span>
   <span>MIT <span class="dot">&middot;</span> 2026 <span class="dot">&middot;</span> the agent that does the work can't close it</span>
-  <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener">GitHub &rarr;</a>
+  <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener">GitHub &rarr;</a>
 </div></footer>
 </body>
 </html>

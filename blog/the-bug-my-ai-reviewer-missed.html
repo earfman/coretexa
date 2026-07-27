@@ -61,6 +61,17 @@ footer{border-top:1px solid var(--hair);padding:30px 0;margin-top:40px}
 .foot-in .dot{opacity:.5}
 .backlink{font-family:var(--mono);font-size:13px;color:var(--cyan-dim);display:inline-block;margin-bottom:30px}
 .backlink:hover{color:var(--cyan)}
+
+/* ---- nav fits between phone and desktop (added 2026-07-27) ---- */
+@media(max-width:900px){ .tag-mit{display:none} }
+@media(max-width:830px){
+  .btn-primary.desk{display:none}
+  .nav-links{gap:16px;font-size:12px}
+}
+@media(max-width:620px){
+  .nav-in{flex-wrap:wrap;row-gap:10px}
+  .nav-links{margin-left:0;width:100%;gap:14px;flex-wrap:wrap}
+}
 </style>
 </head>
 <body>
@@ -74,11 +85,10 @@ footer{border-top:1px solid var(--hair);padding:30px 0;margin-top:40px}
     <span class="tag-mit">MIT · open source</span>
     <div class="nav-links">
       <a href="/#how">How it works</a>
-      <a href="/#protocol">Protocol</a>
-      <a href="/verify.html">Verify PRs</a>
+      <a href="/#verdicts">Protocol</a>
       <a href="/proof.html">Proof</a>
       <a href="/blog.html" class="cur">Writing</a>
-      <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener">GitHub</a>
       <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary desk">Add the check</a>
     </div>
   </div>
@@ -122,7 +132,7 @@ footer{border-top:1px solid var(--hair);padding:30px 0;margin-top:40px}
 <footer><div class="foot-in">
   <span><b style="color:var(--white);letter-spacing:.12em">CORETEXA</b> <span class="dot">·</span> coretexa.dev</span>
   <span>MIT <span class="dot">·</span> 2026 <span class="dot">·</span> the agent that does the work can't close it</span>
-  <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener">GitHub →</a>
+  <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener">GitHub →</a>
 </div></footer>
 </body>
 </html>
