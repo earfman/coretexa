@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CORETEXA — Can this pull request's own tests actually fail?</title>
-<meta name="description" content="A pull request says it fixes a bug and adds tests. coretexa-verify puts the source back the way it was, keeps the new tests, and runs them again. If they still pass, the tests were never a gate. Free GitHub Action, runs on your runner, zero dependencies, MIT.">
+<meta name="description" content="A pull request says it fixes a bug and adds tests. coretexa-verify puts the source back the way it was, keeps the new tests, and runs them again. If they still pass, the tests were never a gate. Free GitHub Action, runs on your runner, MIT.">
   <link rel="canonical" href="https://coretexa.dev/">
   <meta property="og:site_name" content="Coretexa">
   <meta property="og:type" content="website">
@@ -386,7 +386,7 @@ section.final.wrap{padding:100px 28px}
       <a href="/blog.html">Writing</a>
       <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener">GitHub</a>
     </div>
-    <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary desk">Add the check</a>
+    <a href="https://github.com/marketplace/actions/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary desk">Get it</a>
     <button class="nav-toggle" id="navToggle" aria-label="Menu">≡</button>
   </div>
 </nav>
@@ -398,9 +398,9 @@ section.final.wrap{padding:100px 28px}
       <div class="sec-tag kicker">Mutation check for pull requests</div>
       <h1>Can this pull request&rsquo;s own tests <span class="hl">actually fail?</span></h1>
       <p class="sub">A pull request says it fixes a bug and adds tests. Coretexa puts the source code back the way it was, leaves the new tests exactly where they are, and runs them again. If they still pass, the tests do not touch the thing the pull request changed &mdash; and you know that before you merge, not six months later.</p>
-      <p class="worksline">runs on <span class="ok">your</span> runner &mdash; nothing executes on our infrastructure &middot; zero dependencies &middot; no telemetry &middot; MIT</p>
+      <p class="worksline">runs on <span class="ok">your</span> runner &mdash; nothing executes on our infrastructure &middot; no runtime dependencies of its own &middot; no telemetry &middot; MIT</p>
       <div class="hero-cta">
-        <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Add the check to your repo</a>
+        <a href="https://github.com/marketplace/actions/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Get it on the Marketplace</a>
         <a href="/proof.html" class="btn btn-ghost btn-lg">See what it caught</a>
       </div>
     </div>
@@ -418,6 +418,7 @@ section.final.wrap{padding:100px 28px}
         </div>
       </div>
       <p class="mono" style="font-size:11.5px;color:var(--ink-dim);margin-top:12px;text-align:right">a live, unmodified verdict &mdash; not a mock-up</p>
+      <p class="mono" style="font-size:12px;color:var(--ink-dim);margin-top:22px;text-align:right;line-height:1.8">the same discipline, applied to our own work:<br><b style="color:var(--ok)">5 fixes merged upstream</b> &mdash; <a href="https://github.com/google/gson/pull/3059" target="_blank" rel="noopener" style="color:var(--ink)">gson</a>, <a href="https://github.com/bazelbuild/buildtools/pull/1481" target="_blank" rel="noopener" style="color:var(--ink)">buildtools</a>, <a href="https://github.com/PrefectHQ/fastmcp/pull/4517" target="_blank" rel="noopener" style="color:var(--ink)">fastmcp</a>, <a href="https://github.com/VirtusLab/git-machete/pull/1755" target="_blank" rel="noopener" style="color:var(--ink)">git-machete</a>, <a href="https://github.com/Sollumz/szio/pull/2" target="_blank" rel="noopener" style="color:var(--ink)">szio</a></p>
     </div>
   </div>
 </header>
@@ -454,7 +455,7 @@ section.final.wrap{padding:100px 28px}
 <section class="wrap" id="how">
   <div class="sec-tag"><span class="num">02</span> How it works</div>
   <h2 style="font-size:clamp(26px,3.2vw,38px);margin-bottom:14px">One experiment, run on every pull request.</h2>
-  <p style="max-width:720px;color:var(--ink-dim);font-size:16px;margin-bottom:34px">There is no model in it and nothing to configure. It answers one question by running something, and everything it reports it established by observation.</p>
+  <p style="max-width:720px;color:var(--ink-dim);font-size:16px;margin-bottom:34px">There is no model in it, and on a standard project there is nothing to configure. It answers one question by running something, and everything it reports it established by observation.</p>
   <div class="qs-grid">
     <ol class="steps">
       <li>
@@ -463,7 +464,7 @@ section.final.wrap{padding:100px 28px}
       </li>
       <li>
         <h4>Put the source back</h4>
-        <p>Every behavioural hunk is reverted to the merge base &mdash; then each one again on its own, so the verdict points at a line, not a pull request.</p>
+        <p>Every behavioural hunk is reverted to the merge base at once. That is two test runs and usually the whole story. Only when the revert fails to <em>compile</em> &mdash; common in Go, Rust and Java &mdash; does it fall back to reverting each hunk on its own, so the verdict still points at a line rather than a pull request. That second stage is bounded by a time budget you control.</p>
       </li>
       <li>
         <h4>Run the pull request&rsquo;s own tests</h4>
@@ -531,7 +532,7 @@ section.final.wrap{padding:100px 28px}
 <section class="wrap" id="start">
   <div class="sec-tag"><span class="num">04</span> Quick start</div>
   <h2 style="font-size:clamp(26px,3.2vw,38px);margin-bottom:14px">Paste one file. There is no step two.</h2>
-  <p style="max-width:720px;color:var(--ink-dim);font-size:16px;margin-bottom:34px">No account, no API key, no service to sign up for. It installs nothing &mdash; the whole thing is the Python standard library.</p>
+  <p style="max-width:720px;color:var(--ink-dim);font-size:16px;margin-bottom:34px">No account, no API key, no service to sign up for. Coretexa itself is pure Python standard library and pulls in nothing of its own &mdash; it detects and installs <em>your</em> project&rsquo;s declared test dependencies on your runner, because it has to run your tests.</p>
   <div class="term" style="font-size:12.5px;max-width:820px">
     <div class="term-bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="t">.github/workflows/coretexa-verify.yml</span></div>
     <div class="term-body">
@@ -540,7 +541,6 @@ section.final.wrap{padding:100px 28px}
 <span class="l"></span>
 <span class="l"><span class="c-key">permissions</span>:</span>
 <span class="l">  <span class="c-key">contents</span>: read</span>
-<span class="l">  <span class="c-key">pull-requests</span>: write   <span class="c-com"># only for the PR comment</span></span>
 <span class="l"></span>
 <span class="l"><span class="c-key">jobs</span>:</span>
 <span class="l">  <span class="c-key">verify</span>:</span>
@@ -550,11 +550,9 @@ section.final.wrap{padding:100px 28px}
 <span class="l">        <span class="c-key">with</span>:</span>
 <span class="l">          <span class="c-key">fetch-depth</span>: 0            <span class="c-com"># we need the merge base</span></span>
 <span class="l">      - <span class="c-key">uses</span>: <span class="c-str">earfman/coretexa-verify@v1</span></span>
-<span class="l">        <span class="c-key">with</span>:</span>
-<span class="l">          <span class="c-key">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</span>
     </div>
   </div>
-  <p class="mono" style="font-size:12.5px;color:var(--ink-dim);margin-top:18px">It posts a comment and a status check. Non-blocking by default &mdash; it never wedges your merge queue.</p>
+  <p class="mono" style="font-size:12.5px;color:var(--ink-dim);margin-top:18px">Read-only. The verdict goes to the job summary, so nothing needs write access &mdash; the safest thing to run on a public repo that takes fork pull requests. Want it as a PR comment instead? Add <span style="color:var(--amber)">pull-requests: write</span> and pass <span style="color:var(--amber)">github-token</span>. Non-blocking either way &mdash; it never wedges your merge queue.</p>
 </section>
 
 <div class="divider"></div>
@@ -623,9 +621,9 @@ section.final.wrap{padding:100px 28px}
 <!-- ================= FINAL ================= -->
 <section class="final wrap">
   <h2>Find out before you merge.</h2>
-  <p>One file in <code class="mono" style="color:var(--amber)">.github/workflows</code>. It runs on your own runner, costs you nothing, and tells you the one thing a green check never will.</p>
+  <p>One file in <code class="mono" style="color:var(--amber)">.github/workflows</code>. It is free and MIT, it runs on your own runner &mdash; usually two extra test runs per pull request, and Actions is free on public repos &mdash; and it tells you the one thing a green check never will.</p>
   <div class="final-cta">
-    <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Add the check to your repo</a>
+    <a href="https://github.com/marketplace/actions/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Get it on the Marketplace</a>
     <a href="/proof.html" class="btn btn-ghost btn-lg">See what it caught</a>
   </div>
   <p class="honest">early, solo, and MIT &mdash; issues and pull requests welcome</p>
