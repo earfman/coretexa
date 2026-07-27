@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CORETEXA — The accountability queue for AI-done work</title>
-<meta name="description" content="Agent-written pull requests arrive green. Coretexa reverts the source, keeps the pull request's own new tests, and runs them again — because a test that still passes without the fix was never a gate. Free GitHub Action, runs on your runner. MIT.">
+<title>CORETEXA — Can this pull request's own tests actually fail?</title>
+<meta name="description" content="A pull request says it fixes a bug and adds tests. coretexa-verify puts the source back the way it was, keeps the new tests, and runs them again. If they still pass, the tests were never a gate. Free GitHub Action, runs on your runner, zero dependencies, MIT.">
   <link rel="canonical" href="https://coretexa.dev/">
   <meta property="og:site_name" content="Coretexa">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://coretexa.dev/">
-  <meta property="og:title" content="Coretexa — your AI agent can’t close its own work">
-  <meta property="og:description" content="Agent-written pull requests arrive green. Coretexa reverts the source, keeps the pull request's own new tests, and runs them again — because a test that still passes without the fix was never a gate. Free GitHub Action, runs on your runner. MIT.">
+  <meta property="og:title" content="Coretexa — can this pull request's own tests actually fail?">
+  <meta property="og:description" content="Revert the source, keep the pull request's new tests, run them again. A test that still passes without the fix was never a gate. Free GitHub Action, runs on your runner. MIT.">
   <meta property="og:image" content="https://coretexa.dev/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -21,6 +21,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+
 :root{
   --ground:#071a30;
   --ground-2:#0b2545;
@@ -307,11 +308,66 @@ footer a:hover{color:var(--cyan)}
   .pipe-desktop{display:none}
   .pipe-mobile{display:block}
 }
+
+/* ---- nav fits between the mobile menu and full desktop ----
+   Between 640px and ~900px the links were still shown alongside the
+   licence chip and the CTA, which pushed the bar past the viewport. */
+@media(max-width:900px){ .tag-mit{display:none} }
+@media(max-width:830px){
+  .btn-primary.desk{display:none}
+  .nav-links{gap:18px;font-size:12.5px}
+}
+
+/* ---- grid children must be allowed to shrink ----
+   Grid items default to `min-width:auto`, so a terminal block full of
+   `white-space:pre` lines sets the column's floor at its intrinsic width
+   and widens the whole page on a phone. The `overflow-x:auto` on the
+   terminal body only helps once the column itself can get narrower. */
+.hero-grid>*,.qs-grid>*,.nsc-grid>*{min-width:0}
+.term{max-width:100%}
+
+/* ---- section rhythm ----
+   `.wrap` (a class) outranks the bare `section` type selector, so
+   `section{padding:96px 0}` never applied to `<section class="wrap">`
+   and every band collapsed to zero vertical padding. Restore it at a
+   specificity that actually wins, keeping the horizontal gutter. */
+section.wrap{padding:96px 28px}
+header.hero.wrap{padding:88px 28px 72px}
+section.final.wrap{padding:100px 28px}
+@media(max-width:720px){
+  section.wrap{padding:64px 22px}
+  header.hero.wrap{padding:56px 22px 48px}
+  section.final.wrap{padding:72px 22px}
+}
+
+/* ---- verdict cards ---- */
+.gate.v-bad{border-top-color:var(--bad)} .gate.v-bad .gn{color:var(--bad)}
+.gate.v-ok{border-top-color:var(--ok)} .gate.v-ok .gn{color:var(--ok)}
+.gate.v-dim{border-top-color:var(--ink-dim)} .gate.v-dim .gn{color:var(--ink-dim)}
+.gate code{font-family:var(--mono);font-size:12.5px}
+/* ---- cannot list ---- */
+.cannot{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:22px}
+.cannot li{list-style:none;border-left:2px solid var(--bad);padding:2px 0 2px 16px;font-size:14.5px;color:var(--ink-dim)}
+.cannot li b{color:var(--white);font-weight:600;display:block;margin-bottom:3px;font-size:15px}
+/* ---- catch card ---- */
+.catch{border:1px solid var(--line);border-radius:11px;background:rgba(10,33,56,.42);padding:0;overflow:hidden}
+.catch .ch{padding:22px 26px;border-bottom:1px solid var(--hair);display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+.catch .ch .verd{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--bad);border:1px solid var(--bad);border-radius:3px;padding:3px 9px}
+.catch .ch .verd.fixed{color:var(--ok);border-color:var(--ok)}
+.catch .ch .repo{font-family:var(--mono);font-size:13px;color:var(--white)}
+.catch .cb{padding:24px 26px}
+.catch .cb p{font-size:15px;color:var(--ink);margin-bottom:16px}
+.catch .cb p:last-child{margin-bottom:0}
+.catch .cb .epi{font-size:14px;color:var(--ink-dim);border-left:2px solid var(--amber);padding-left:14px;margin-top:20px}
+.catch .cb .epi b{color:var(--white)}
+.langs{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;font-family:var(--mono);font-size:12px}
+.langs span{border:1px solid var(--hair);border-radius:4px;padding:5px 11px;color:var(--ink)}
+.langs span.exp{color:var(--ink-dim)}
+@media(max-width:860px){.cannot{grid-template-columns:1fr}}
 </style>
 </head>
-<body>
+<body id="top">
 
-<!-- ============ NAV ============ -->
 <nav id="nav">
   <div class="nav-in">
     <a href="#top" class="brand">
@@ -324,409 +380,107 @@ footer a:hover{color:var(--cyan)}
     <span class="tag-mit">MIT · open source</span>
     <div class="nav-links">
       <a href="#how">How it works</a>
-      <a href="#protocol">Protocol</a>
-      <a href="/verify.html">Verify PRs</a>
+      <a href="#verdicts">Verdicts</a>
+      <a href="#start">Quick start</a>
       <a href="/proof.html">Proof</a>
       <a href="/blog.html">Writing</a>
-      <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener">GitHub</a>
     </div>
     <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary desk">Add the check</a>
     <button class="nav-toggle" id="navToggle" aria-label="Menu">≡</button>
   </div>
 </nav>
 
-<span id="top"></span>
-
-<!-- ============ HERO ============ -->
+<!-- ================= HERO ================= -->
 <header class="hero wrap">
   <div class="hero-grid">
     <div>
-      <div class="sec-tag kicker"><span class="num">SPEC</span> accountability protocol</div>
-      <h1>Your AI agent <span class="hl">can't close</span> its own work.</h1>
-      <p class="sub">Agent-written pull requests arrive green. Coretexa puts the source back the way it was, leaves the pull request&rsquo;s own new tests in place, and runs them again &mdash; because a test that still passes without the fix was never a gate.</p>
-      <p class="worksline">runs on <span class="ok">your</span> CI runner &mdash; nothing executes on our infrastructure &middot; zero dependencies &middot; MIT</p>
+      <div class="sec-tag kicker">Mutation check for pull requests</div>
+      <h1>Can this pull request&rsquo;s own tests <span class="hl">actually fail?</span></h1>
+      <p class="sub">A pull request says it fixes a bug and adds tests. Coretexa puts the source code back the way it was, leaves the new tests exactly where they are, and runs them again. If they still pass, the tests do not touch the thing the pull request changed &mdash; and you know that before you merge, not six months later.</p>
+      <p class="worksline">runs on <span class="ok">your</span> runner &mdash; nothing executes on our infrastructure &middot; zero dependencies &middot; no telemetry &middot; MIT</p>
       <div class="hero-cta">
         <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Add the check to your repo</a>
         <a href="/proof.html" class="btn btn-ghost btn-lg">See what it caught</a>
       </div>
-      <div style="margin-top:26px;border:1px solid var(--line);background:rgba(0,0,0,.22);padding:16px 18px;font-family:var(--mono);font-size:12.5px;line-height:1.85;overflow-x:auto">
-        <div style="color:var(--amber);letter-spacing:.09em;font-size:11px;margin-bottom:10px">REAL OUTPUT &middot; ioi-isr/cms&nbsp;#174</div>
-        <div style="color:var(--bad);font-weight:700">[!!] NO_GATE</div>
-        <div style="color:var(--ink)">3 of 5 behavioural changes in this PR can be reverted with all 5 of its<br>tests still passing. This PR&rsquo;s tests would pass without the fix.</div>
-        <div style="color:var(--ink-dim);margin-top:10px">run at head &nbsp;<span style="color:var(--ok)">PASS</span> &mdash; 5 passed<br>run with source reverted &nbsp;<span style="color:var(--bad)">PASS</span> &mdash; 5 passed &nbsp;<span style="color:var(--bad)">&larr; the finding</span></div>
-      </div>
     </div>
-
-    <!-- mini no-self-close schematic -->
-    <div class="hero-card reveal">
-      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-      <svg viewBox="0 0 380 260" width="100%" fill="none" font-family="IBM Plex Mono" aria-label="Doer marks done, verifier closes, self-close refused">
-        <defs>
-          <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-            <path d="M0 0L10 5L0 10z" fill="#22d3ee"/>
-          </marker>
-          <marker id="ahb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-            <path d="M0 0L10 5L0 10z" fill="#ff5d73"/>
-          </marker>
-        </defs>
-        <!-- doer -->
-        <rect x="20" y="34" width="120" height="52" rx="6" stroke="#1f5688" fill="rgba(34,211,238,.05)"/>
-        <text x="80" y="58" fill="#eaf4fb" font-size="13" text-anchor="middle" font-weight="600">DOER</text>
-        <text x="80" y="74" fill="#6c93b4" font-size="9.5" text-anchor="middle">agent · claimer</text>
-        <!-- verifier -->
-        <rect x="240" y="34" width="120" height="52" rx="6" stroke="#1f5688" fill="rgba(245,182,66,.05)"/>
-        <text x="300" y="58" fill="#eaf4fb" font-size="13" text-anchor="middle" font-weight="600">VERIFIER</text>
-        <text x="300" y="74" fill="#6c93b4" font-size="9.5" text-anchor="middle">2nd actor</text>
-        <!-- allowed: mark done -->
-        <path d="M140 52 H236" stroke="#22d3ee" stroke-width="1.6" marker-end="url(#ah)" class="flow-path"/>
-        <text x="188" y="44" fill="#22d3ee" font-size="9" text-anchor="middle">mark done →</text>
-        <!-- verifier closes ticket -->
-        <rect x="130" y="140" width="120" height="52" rx="6" stroke="#3ddc97" fill="rgba(61,220,151,.06)"/>
-        <text x="190" y="164" fill="#eaf4fb" font-size="12" text-anchor="middle" font-weight="600">CLOSED ✓</text>
-        <text x="190" y="180" fill="#6c93b4" font-size="9" text-anchor="middle">verified vs. reality</text>
-        <path d="M300 86 C300 130 250 140 250 156" stroke="#3ddc97" stroke-width="1.6" marker-end="url(#ah)"/>
-        <text x="300" y="118" fill="#3ddc97" font-size="9" text-anchor="middle">close</text>
-        <!-- refused self-close -->
-        <path d="M80 86 C80 130 130 140 130 156" stroke="#ff5d73" stroke-width="1.6" stroke-dasharray="4 4" marker-end="url(#ahb)"/>
-        <g class="reject-x">
-          <circle cx="103" cy="123" r="12" fill="#0a2138" stroke="#ff5d73" stroke-width="1.4"/>
-          <path d="M97 117l12 12M109 117l-12 12" stroke="#ff5d73" stroke-width="1.8"/>
-        </g>
-        <text x="70" y="120" fill="#ff5d73" font-size="9" text-anchor="end">self-close</text>
-        <text x="70" y="132" fill="#ff5d73" font-size="9" text-anchor="end">REFUSED</text>
-        <text x="190" y="228" fill="#6c93b4" font-size="9.5" text-anchor="middle">verify refuses when  verifier == claimer</text>
-      </svg>
+    <div>
+      <div class="term" style="font-size:12.5px">
+        <div class="term-bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="t">real output · ioi-isr/cms #174</span></div>
+        <div class="term-body">
+<span class="l"><span class="c-bad">[!!] NO_GATE</span></span>
+<span class="l"></span>
+<span class="l"><span class="c-com">3 of 5 behavioural changes in this PR can be</span></span>
+<span class="l"><span class="c-com">reverted with all 5 of its tests still passing.</span></span>
+<span class="l"></span>
+<span class="l"><span class="c-cmd">run at head</span>              <span class="c-str">PASS</span> <span class="c-com">— 5 passed</span></span>
+<span class="l"><span class="c-cmd">run w/ source reverted</span>  <span class="c-str">PASS</span> <span class="c-com">— 5 passed</span> <span class="c-flag">&larr; the finding</span></span>
+        </div>
+      </div>
+      <p class="mono" style="font-size:11.5px;color:var(--ink-dim);margin-top:12px;text-align:right">a live, unmodified verdict &mdash; not a mock-up</p>
     </div>
   </div>
 </header>
 
 <div class="divider"></div>
 
-<!-- ============ PROBLEM ============ -->
-<section id="problem" class="wrap">
-  <div class="sec-tag reveal"><span class="num">01</span> the problem</div>
-  <p class="problem-lead reveal">AI agents will happily do 80% of a task, declare victory, and <span class="q">quietly break something else</span> on the way out.</p>
-  <p style="color:var(--ink-dim);max-width:640px;margin-bottom:8px" class="reveal">Coretexa is the queue that catches it.</p>
+<!-- ================= PROBLEM ================= -->
+<section class="wrap" id="problem">
+  <div class="sec-tag"><span class="num">01</span> The problem</div>
+  <p class="problem-lead">Agent-written pull requests arrive green. <span class="q">Green is not evidence.</span></p>
+  <p style="max-width:760px;color:var(--ink-dim);font-size:16px">A passing suite tells you the tests passed. It does not tell you the tests would have failed without the fix &mdash; and that is the only property that makes a test a gate.</p>
   <div class="problem-grid">
-    <div class="pcard reveal"><span class="idx">BEAT 01</span><h3>It finishes 80% and says done.</h3><p>The last, hard 20% — edge cases, cleanup, the thing that actually mattered — gets rounded up to "complete" and handed back.</p></div>
-    <div class="pcard reveal"><span class="idx">BEAT 02</span><h3>It broke something adjacent.</h3><p>The change that passed its own test quietly regressed a file three directories over. Nobody looked, because the agent said it was fine.</p></div>
-    <div class="pcard reveal"><span class="idx">BEAT 03</span><h3>The doer graded itself.</h3><p>The thing that did the work is the thing that decided the work was good. That's not review — that's a rubber stamp with extra steps.</p></div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ============ HOW IT WORKS ============ -->
-<section id="how" class="wrap">
-  <div class="sec-tag reveal"><span class="num">02</span> how it works — the lifecycle</div>
-  <h2 class="reveal" style="font-size:clamp(26px,3.2vw,38px);max-width:640px;margin-bottom:8px">A ticket moves through states. It cannot skip the one that matters.</h2>
-  <p class="reveal" style="color:var(--ink-dim);max-width:640px;margin-bottom:26px">pending → claimed → done → verified → closed, with a blocked branch. A token travels the happy path; the self-close attempt forks and is rejected.</p>
-
-  <div class="diagram-shell reveal">
-    <div class="diagram-head">
-      <span class="t">FIG-02 · TICKET LIFECYCLE · statuses = {pending, claimed, done, verified, closed, blocked}</span>
+    <div class="pcard reveal">
+      <span class="idx">BEAT 01</span>
+      <h3>The test covers the wrong thing</h3>
+      <p>The new test exercises the tidy helper function the change added, not the one line that wires it into the program. Delete the wiring and the test is still green.</p>
     </div>
-    <div class="svg-scroll pipe-desktop">
-      <svg class="pipeline" viewBox="0 0 1000 340" font-family="IBM Plex Mono" aria-label="Ticket lifecycle pipeline from pending to closed with blocked branch and rejected self-close fork">
-        <defs>
-          <marker id="pa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#22d3ee"/></marker>
-          <marker id="paA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#f5b642"/></marker>
-          <marker id="paR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ff5d73"/></marker>
-          <radialGradient id="tok" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#bff6ff"/><stop offset="60%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
-          </radialGradient>
-          <!-- dimension baseline -->
-        </defs>
-
-        <!-- dimension line under main track -->
-        <line x1="60" y1="212" x2="940" y2="212" stroke="#18456e" stroke-width="1" stroke-dasharray="2 4"/>
-        <line x1="60" y1="206" x2="60" y2="218" stroke="#18456e"/>
-        <line x1="940" y1="206" x2="940" y2="218" stroke="#18456e"/>
-        <text x="500" y="228" fill="#6c93b4" font-size="9.5" text-anchor="middle">happy path — one ticket, five states</text>
-
-        <!-- MAIN TRACK connectors (behind nodes) -->
-        <g id="track">
-          <path class="flow-path" d="M148 130 H212" stroke="#22d3ee" stroke-width="2" marker-end="url(#pa)"/>
-          <path class="flow-path" d="M308 130 H372" stroke="#22d3ee" stroke-width="2" marker-end="url(#pa)"/>
-          <path class="flow-path" d="M468 130 H532" stroke="#22d3ee" stroke-width="2" marker-end="url(#pa)"/>
-          <path class="flow-path" d="M628 130 H692" stroke="#f5b642" stroke-width="2" marker-end="url(#paA)"/>
-          <path class="flow-path" d="M788 130 H852" stroke="#3ddc97" stroke-width="2" marker-end="url(#pa)"/>
-        </g>
-
-        <!-- state nodes -->
-        <!-- helper: each node -->
-        <g font-size="12" text-anchor="middle">
-          <!-- pending -->
-          <rect x="60" y="106" width="88" height="48" rx="7" fill="rgba(108,147,180,.08)" stroke="#6c93b4"/>
-          <circle class="node-pulse" cx="104" cy="96" r="4" fill="#6c93b4"/>
-          <text x="104" y="128" fill="#c9def0">pending</text><text x="104" y="143" fill="#6c93b4" font-size="8.5">queued</text>
-          <!-- claimed -->
-          <rect x="220" y="106" width="88" height="48" rx="7" fill="rgba(34,211,238,.07)" stroke="#22d3ee"/>
-          <circle class="node-pulse" cx="264" cy="96" r="4" fill="#22d3ee"/>
-          <text x="264" y="128" fill="#eaf4fb">claimed</text><text x="264" y="143" fill="#6c93b4" font-size="8.5">actor A</text>
-          <!-- done -->
-          <rect x="380" y="106" width="88" height="48" rx="7" fill="rgba(34,211,238,.07)" stroke="#22d3ee"/>
-          <circle class="node-pulse" cx="424" cy="96" r="4" fill="#22d3ee"/>
-          <text x="424" y="128" fill="#eaf4fb">done</text><text x="424" y="143" fill="#6c93b4" font-size="8.5">A marks</text>
-          <!-- verified -->
-          <rect x="540" y="106" width="88" height="48" rx="7" fill="rgba(245,182,66,.08)" stroke="#f5b642"/>
-          <circle class="node-pulse" cx="584" cy="96" r="4" fill="#f5b642"/>
-          <text x="584" y="128" fill="#eaf4fb">verified</text><text x="584" y="143" fill="#6c93b4" font-size="8.5">actor B</text>
-          <!-- closed -->
-          <rect x="700" y="106" width="88" height="48" rx="7" fill="rgba(61,220,151,.09)" stroke="#3ddc97"/>
-          <circle class="node-pulse" cx="744" cy="96" r="4" fill="#3ddc97"/>
-          <text x="744" y="127" fill="#eaf4fb">closed ✓</text><text x="744" y="143" fill="#6c93b4" font-size="8.5">settled</text>
-          <!-- terminal marker -->
-          <circle cx="884" cy="130" r="9" fill="none" stroke="#3ddc97" stroke-width="1.5"/>
-          <path d="M879 130l4 4 6-7" stroke="#3ddc97" stroke-width="1.8" fill="none"/>
-        </g>
-
-        <!-- BLOCKED branch (from claimed) -->
-        <path d="M264 154 C264 196 210 196 176 262" stroke="#ff5d73" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#paR)"/>
-        <rect x="96" y="262" width="94" height="44" rx="7" fill="rgba(255,93,115,.06)" stroke="#ff5d73"/>
-        <text x="143" y="283" fill="#ff8a99" font-size="12" text-anchor="middle">blocked</text>
-        <text x="143" y="297" fill="#6c93b4" font-size="8.5" text-anchor="middle">needs input</text>
-
-        <!-- FORK: self-close attempt from 'done' -->
-        <path d="M424 154 C424 196 360 196 336 250" stroke="#ff5d73" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#paR)"/>
-        <g class="reject-x">
-          <circle cx="356" cy="214" r="13" fill="#0a2138" stroke="#ff5d73" stroke-width="1.5"/>
-          <path d="M349 207l14 14M363 207l-14 14" stroke="#ff5d73" stroke-width="2"/>
-        </g>
-        <text x="300" y="278" fill="#ff5d73" font-size="10" text-anchor="middle" font-weight="600">actor A self-close</text>
-        <text x="300" y="292" fill="#ff5d73" font-size="10" text-anchor="middle" font-weight="600">→ REFUSED by server</text>
-
-        <!-- VERIFY: second actor path from 'done' up to verified (annotate the required fork) -->
-        <path d="M468 118 C500 96 510 96 540 118" stroke="#3ddc97" stroke-width="1.6" fill="none" marker-end="url(#pa)"/>
-        <text x="504" y="86" fill="#3ddc97" font-size="9" text-anchor="middle">2nd actor verifies ✓</text>
-
-        <!-- token -->
-        <circle id="token" r="7" fill="url(#tok)"/>
-      </svg>
+    <div class="pcard reveal">
+      <span class="idx">BEAT 02</span>
+      <h3>The suite was quietly weakened</h3>
+      <p>An assertion loosened, a case skipped, a threshold widened. CI goes green because the bar moved, not because the bug went away.</p>
     </div>
-
-    <!-- ===== MOBILE: reflowed vertical pipeline ===== -->
-    <div class="pipe-mobile">
-      <svg viewBox="0 0 360 560" font-family="IBM Plex Mono" width="100%" aria-label="Ticket lifecycle, vertical: pending, claimed, done, verified, closed, with blocked branch and rejected self-close">
-        <defs>
-          <marker id="ma" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#22d3ee"/></marker>
-          <marker id="maA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#f5b642"/></marker>
-          <marker id="maG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#3ddc97"/></marker>
-          <marker id="maR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ff5d73"/></marker>
-          <radialGradient id="tokm" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#bff6ff"/><stop offset="60%" stop-color="#22d3ee"/><stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
-          </radialGradient>
-        </defs>
-        <!-- vertical connectors -->
-        <path class="flow-path" d="M121 62 V100" stroke="#22d3ee" stroke-width="2" marker-end="url(#ma)"/>
-        <path class="flow-path" d="M121 148 V186" stroke="#22d3ee" stroke-width="2" marker-end="url(#ma)"/>
-        <path class="flow-path" d="M121 234 V336" stroke="#f5b642" stroke-width="2" marker-end="url(#maA)"/>
-        <path class="flow-path" d="M121 384 V436" stroke="#3ddc97" stroke-width="2" marker-end="url(#maG)"/>
-
-        <!-- blocked branch off claimed -->
-        <path d="M180 126 H222" stroke="#ff5d73" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#maR)"/>
-        <rect x="228" y="104" width="120" height="44" rx="7" fill="rgba(255,93,115,.06)" stroke="#ff5d73"/>
-        <text x="288" y="124" fill="#ff8a99" font-size="12" text-anchor="middle">blocked</text>
-        <text x="288" y="139" fill="#6c93b4" font-size="9" text-anchor="middle">needs input</text>
-
-        <!-- self-close refused fork off done -->
-        <path d="M180 212 C214 212 232 236 244 254" stroke="#ff5d73" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#maR)"/>
-        <g class="reject-x">
-          <circle cx="256" cy="270" r="13" fill="#0a2138" stroke="#ff5d73" stroke-width="1.5"/>
-          <path d="M249 263l14 14M263 263l-14 14" stroke="#ff5d73" stroke-width="2"/>
-        </g>
-        <text x="256" y="300" fill="#ff5d73" font-size="10" text-anchor="middle" font-weight="600">self-close</text>
-        <text x="256" y="313" fill="#ff5d73" font-size="10" text-anchor="middle" font-weight="600">REFUSED</text>
-
-        <!-- 2nd actor verify annotation -->
-        <text x="30" y="292" fill="#3ddc97" font-size="10">2nd actor</text>
-        <text x="30" y="306" fill="#3ddc97" font-size="10">verifies ✓</text>
-
-        <!-- nodes -->
-        <g text-anchor="middle" font-size="13">
-          <circle class="node-pulse" cx="48" cy="40" r="4" fill="#6c93b4"/>
-          <rect x="62" y="18" width="118" height="44" rx="7" fill="rgba(108,147,180,.08)" stroke="#6c93b4"/>
-          <text x="121" y="38" fill="#c9def0">pending</text><text x="121" y="53" fill="#6c93b4" font-size="9">queued</text>
-
-          <circle class="node-pulse" cx="48" cy="126" r="4" fill="#22d3ee"/>
-          <rect x="62" y="104" width="118" height="44" rx="7" fill="rgba(34,211,238,.07)" stroke="#22d3ee"/>
-          <text x="121" y="124" fill="#eaf4fb">claimed</text><text x="121" y="139" fill="#6c93b4" font-size="9">actor A</text>
-
-          <circle class="node-pulse" cx="48" cy="212" r="4" fill="#22d3ee"/>
-          <rect x="62" y="190" width="118" height="44" rx="7" fill="rgba(34,211,238,.07)" stroke="#22d3ee"/>
-          <text x="121" y="210" fill="#eaf4fb">done</text><text x="121" y="225" fill="#6c93b4" font-size="9">A marks</text>
-
-          <circle class="node-pulse" cx="48" cy="362" r="4" fill="#f5b642"/>
-          <rect x="62" y="340" width="118" height="44" rx="7" fill="rgba(245,182,66,.08)" stroke="#f5b642"/>
-          <text x="121" y="360" fill="#eaf4fb">verified</text><text x="121" y="375" fill="#6c93b4" font-size="9">actor B</text>
-
-          <circle class="node-pulse" cx="48" cy="462" r="4" fill="#3ddc97"/>
-          <rect x="62" y="440" width="118" height="44" rx="7" fill="rgba(61,220,151,.09)" stroke="#3ddc97"/>
-          <text x="121" y="460" fill="#eaf4fb">closed ✓</text><text x="121" y="475" fill="#6c93b4" font-size="9">settled</text>
-        </g>
-        <circle id="token-m" r="7" fill="url(#tokm)"/>
-      </svg>
-    </div>
-
-    <div class="legend">
-      <span><i style="background:#6c93b4"></i>pending / queued</span>
-      <span><i style="background:#22d3ee"></i>doer states (actor A)</span>
-      <span><i style="background:#f5b642"></i>verify (actor B)</span>
-      <span><i style="background:#3ddc97"></i>closed / settled</span>
-      <span><i style="background:#ff5d73"></i>blocked / refused</span>
+    <div class="pcard reveal">
+      <span class="idx">BEAT 03</span>
+      <h3>The author graded the work</h3>
+      <p>The thing that wrote the fix also wrote the test that proves the fix. That is not review &mdash; it is a rubber stamp with extra steps.</p>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- ============ FIVE GATES ============ -->
-<section id="protocol" class="wrap">
-  <div class="sec-tag reveal"><span class="num">03</span> the definition of done — five gates</div>
-  <h2 class="reveal" style="font-size:clamp(26px,3.2vw,38px);max-width:680px;margin-bottom:26px">A ticket isn't closed until it clears all five. Gate 5 is what makes the other four real.</h2>
-  <div class="gates">
-    <div class="gate reveal"><span class="gn">GATE 1</span><h4>Does what was asked</h4><p>The requested behavior exists and works — not an approximation of it.</p></div>
-    <div class="gate reveal"><span class="gn">GATE 2</span><h4>Broke nothing that worked</h4><p>No adjacent regression. What passed before still passes.</p></div>
-    <div class="gate reveal"><span class="gn">GATE 3</span><h4>Self-consistent</h4><p>Internally coherent — names, types, contracts, and docs agree.</p></div>
-    <div class="gate reveal"><span class="gn">GATE 4</span><h4>Actually finished</h4><p>The full task — not the easy 80% with the hard part deferred.</p></div>
-    <div class="gate g5 reveal"><span class="gn">GATE 5</span><h4>A second set of eyes</h4><p>A different actor confirmed gates 1–4 against reality. Not the doer.</p></div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ============ NO SELF CLOSE ============ -->
-<section id="noselfclose" class="wrap nsc">
-  <div class="nsc-grid">
-    <div>
-      <div class="sec-tag reveal"><span class="num">04</span> the one hard rule</div>
-      <h2 class="reveal">The doer may mark done. Only a <span class="no">different actor</span> may close.</h2>
-      <p class="reveal">No-self-close isn't a code-review culture you hope people follow. It's an invariant. The server checks the actor id on every close, and refuses when the verifier is the same identity that claimed the ticket.</p>
-      <p class="enforced reveal">Enforced by the server, not by convention.</p>
-    </div>
-    <div class="term reveal">
-      <div class="term-bar">
-        <i style="background:#ff5d73"></i><i style="background:#f5b642"></i><i style="background:#3ddc97"></i>
-        <span class="t">agent-A@session — verify attempt</span>
-      </div>
-      <div class="term-body">
-<span class="l"><span class="c-com"># agent A claimed and finished ticket #204</span></span>
-<span class="l"><span class="c-prompt">agent-A ❯</span> <span class="c-cmd">coretexa</span> <span class="c-key">verify</span> <span class="c-flag">--ticket</span> <span class="c-str">204</span> <span class="c-flag">--actor</span> <span class="c-str">agent-A</span></span>
-<span class="l"> </span>
-<span class="l"><span class="c-bad">✗ REFUSED</span> <span class="c-dim">self_close_forbidden</span></span>
-<span class="l">  <span class="c-dim">verifier (agent-A) == claimer (agent-A)</span></span>
-<span class="l">  <span class="c-dim">ticket #204 stays in state: </span><span class="c-flag">done</span></span>
-<span class="l"> </span>
-<span class="l"><span class="c-com"># a different actor verifies against ground truth</span></span>
-<span class="l"><span class="c-prompt">agent-B ❯</span> <span class="c-cmd">coretexa</span> <span class="c-key">verify</span> <span class="c-flag">--ticket</span> <span class="c-str">204</span> <span class="c-flag">--actor</span> <span class="c-str">agent-B</span></span>
-<span class="l"> </span>
-<span class="l"><span class="c-ok">✓ verified</span> <span class="c-dim">by agent-B · gates 1–5 pass</span></span>
-<span class="l"><span class="c-ok">✓ closed</span>   <span class="c-dim">#204 → state: </span><span class="c-ok">closed</span></span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ============ BEYOND TICKETS ============ -->
-<section id="beyond" class="wrap">
-  <div class="sec-tag reveal"><span class="num">05</span> beyond tickets</div>
-  <h2 class="reveal" style="font-size:clamp(26px,3.2vw,38px);max-width:700px;margin-bottom:26px">Because lineage is data, the queue knows things a to-do list never could.</h2>
-  <div class="beyond-grid">
-    <div class="bcard reveal">
-      <h3>Regression auto-cut <span class="badge">SYSTEM</span></h3>
-      <p>Something that passed before now fails on verify. The system files a linked follow-up ticket and escalates its priority. The agent can't suppress it — the correction is the system's, not the doer's.</p>
-      <div class="term" style="font-size:12px">
-        <div class="term-body" style="padding:14px 16px">
-<span class="l"><span class="c-bad">✗ verify #204 failed</span> <span class="c-dim">regression: auth.test</span></span>
-<span class="l"><span class="c-amber c-flag">↳ auto-cut</span> <span class="c-dim">#231</span> <span class="c-cmd">origin=</span><span class="c-str">regression</span></span>
-<span class="l">  <span class="c-dim">parent_id=204 · priority↑ </span><span class="c-flag">high</span></span>
-        </div>
-      </div>
-    </div>
-    <div class="bcard reveal">
-      <h3>Spawn depth <span class="badge">SIGNATURE</span></h3>
-      <p>Every ticket carries its parent. So you can measure how many generations of fix-broke-something a change took to settle. A deep lineage is a map straight to the fragile parts of your codebase.</p>
-      <div class="tree-wrap">
-        <svg class="tree" viewBox="0 0 520 210" font-family="IBM Plex Mono" aria-label="Ticket lineage tree: parent spawns correction spawns regression, three generations deep">
-          <defs>
-            <marker id="ta" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#6c93b4"/></marker>
-          </defs>
-          <!-- depth axis -->
-          <line x1="26" y1="30" x2="26" y2="182" stroke="#18456e" stroke-dasharray="2 4"/>
-          <text x="20" y="42" fill="#6c93b4" font-size="8.5" text-anchor="end">g0</text>
-          <text x="20" y="100" fill="#6c93b4" font-size="8.5" text-anchor="end">g1</text>
-          <text x="20" y="158" fill="#6c93b4" font-size="8.5" text-anchor="end">g2</text>
-          <!-- edges -->
-          <path d="M120 46 C120 74 120 74 120 92" stroke="#6c93b4" stroke-width="1.4" fill="none" marker-end="url(#ta)"/>
-          <path d="M120 46 C120 74 300 74 300 92" stroke="#6c93b4" stroke-width="1.4" fill="none" marker-end="url(#ta)"/>
-          <path d="M300 106 C300 132 300 132 300 150" stroke="#6c93b4" stroke-width="1.4" fill="none" marker-end="url(#ta)"/>
-          <path d="M300 106 C300 132 430 132 430 150" stroke="#6c93b4" stroke-width="1.4" fill="none" marker-end="url(#ta)"/>
-          <!-- g0 root -->
-          <g text-anchor="middle">
-            <rect x="70" y="24" width="100" height="26" rx="5" fill="rgba(34,211,238,.08)" stroke="#22d3ee"/>
-            <text x="120" y="41" fill="#eaf4fb" font-size="11">#204 · manual</text>
-            <!-- g1 -->
-            <rect x="66" y="90" width="108" height="26" rx="5" fill="rgba(245,182,66,.08)" stroke="#f5b642"/>
-            <text x="120" y="107" fill="#eaf4fb" font-size="10.5">#217 · correction</text>
-            <rect x="246" y="90" width="108" height="26" rx="5" fill="rgba(255,93,115,.07)" stroke="#ff5d73"/>
-            <text x="300" y="107" fill="#eaf4fb" font-size="10.5">#231 · regression</text>
-            <!-- g2 -->
-            <rect x="246" y="148" width="108" height="26" rx="5" fill="rgba(245,182,66,.08)" stroke="#f5b642"/>
-            <text x="300" y="165" fill="#eaf4fb" font-size="10.5">#244 · correction</text>
-            <rect x="380" y="148" width="100" height="26" rx="5" fill="rgba(61,220,151,.08)" stroke="#3ddc97"/>
-            <text x="430" y="165" fill="#eaf4fb" font-size="10.5">#245 · closed ✓</text>
-          </g>
-        </svg>
-      </div>
-      <p class="tree-note">origin ∈ {manual, spawned, correction, regression} · linked by <b>parent_id</b>. This subtree settled in <b>3 generations</b> — that's a fragile area worth a human's attention.</p>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- ============ PROOF ============ -->
-<section id="proof" class="wrap proof">
-  <div class="sec-tag reveal" style="justify-content:center"><span class="num">06</span> proof — run 100+ tickets deep</div>
-  <p class="proof-quote reveal">Not a framework looking for a user — a habit, extracted.</p>
-  <div class="stats reveal">
-    <div class="stat"><span class="dim-line"></span><div class="num">100</div><div class="cap">tickets run on real software</div></div>
-    <div class="stat amber"><span class="dim-line"></span><div class="num">33</div><div class="cap">spawned by other tickets</div></div>
-    <div class="stat"><span class="dim-line"></span><div class="num">75</div><div class="cap">verified by a second pass</div></div>
-  </div>
-  <p class="proof-sub reveal">Built by one developer who ran it 100+ tickets deep. 14 MCP tools; a 29-test suite runs the full lifecycle against in-memory Postgres.</p>
-</section>
-
-<div class="divider"></div>
-
-<!-- ============ QUICK START ============ -->
-<section id="start" class="wrap">
-  <div class="sec-tag reveal"><span class="num">07</span> quick start — three steps</div>
+<!-- ================= HOW IT WORKS ================= -->
+<section class="wrap" id="how">
+  <div class="sec-tag"><span class="num">02</span> How it works</div>
+  <h2 style="font-size:clamp(26px,3.2vw,38px);margin-bottom:14px">One experiment, run on every pull request.</h2>
+  <p style="max-width:720px;color:var(--ink-dim);font-size:16px;margin-bottom:34px">There is no model in it and nothing to configure. It answers one question by running something, and everything it reports it established by observation.</p>
   <div class="qs-grid">
     <ol class="steps">
-      <li class="reveal"><h4>Load the schema</h4><p>Postgres owns the queue. One file, one command.</p><code>psql &lt; schema.sql</code></li>
-      <li class="reveal"><h4>Add the MCP server</h4><p>Register the server twice — once as the <code>doer</code>, once as the <code>verifier</code>. Two distinct actor ids is the whole point.</p></li>
-      <li class="reveal"><h4>Work, then verify — from a different session</h4><p>Run <code>/work-queue</code> to claim and do. Then <code>/verify-queue</code> from a second session to check and close.</p></li>
+      <li>
+        <h4>Split the diff</h4>
+        <p>Source changes on one side, new and modified tests on the other. Renames, docs, lockfiles and assets are classified and set aside.</p>
+      </li>
+      <li>
+        <h4>Put the source back</h4>
+        <p>Every behavioural hunk is reverted to the merge base &mdash; then each one again on its own, so the verdict points at a line, not a pull request.</p>
+      </li>
+      <li>
+        <h4>Run the pull request&rsquo;s own tests</h4>
+        <p>Unchanged, exactly as the author wrote them. If they fail, the tests genuinely gate the change. If they pass, they never did.</p>
+      </li>
     </ol>
-    <div class="term reveal">
-      <div class="term-bar">
-        <i style="background:#ff5d73"></i><i style="background:#f5b642"></i><i style="background:#3ddc97"></i>
-        <span class="t">~/project — coretexa setup</span>
-      </div>
+    <div class="term" style="font-size:12.5px">
+      <div class="term-bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="t">per-hunk localisation</span></div>
       <div class="term-body">
-<span class="l"><span class="c-com"># 1 · create the queue in Postgres</span></span>
-<span class="l"><span class="c-prompt">❯</span> <span class="c-cmd">psql</span> <span class="c-dim">$DATABASE_URL</span> <span class="c-flag">&lt;</span> <span class="c-str">schema.sql</span></span>
-<span class="l"><span class="c-ok">CREATE TABLE</span> <span class="c-dim">tickets, lineage, actors …</span></span>
-<span class="l"> </span>
-<span class="l"><span class="c-com"># 2 · register two actors in .mcp.json</span></span>
-<span class="l"><span class="c-key">"coretexa-doer"</span><span class="c-dim">:     { "actor": </span><span class="c-str">"agent-A"</span> <span class="c-dim">}</span></span>
-<span class="l"><span class="c-key">"coretexa-verifier"</span><span class="c-dim">: { "actor": </span><span class="c-str">"agent-B"</span> <span class="c-dim">}</span></span>
-<span class="l"> </span>
-<span class="l"><span class="c-com"># 3 · do the work, then verify elsewhere</span></span>
-<span class="l"><span class="c-prompt">agent-A ❯</span> <span class="c-cmd">/work-queue</span>    <span class="c-dim"># claim → done</span></span>
-<span class="l"><span class="c-prompt">agent-B ❯</span> <span class="c-cmd">/verify-queue</span>  <span class="c-dim"># verify → closed</span></span>
+<span class="l"><span class="c-com">per-hunk localisation (each hunk reverted on its own)</span></span>
+<span class="l">  <span class="c-str">GATED</span>     <span class="c-cmd">config/web/web.go</span> hunk 4</span>
+<span class="l">            <span class="c-com">ASSERT_FAIL: 62 passed, 1 failed</span></span>
+<span class="l">            <span class="c-dim">-&gt; TestGetDefaultConfig</span></span>
+<span class="l">  <span class="c-bad">UNGATED</span>   <span class="c-cmd">config/config.go</span> hunk 1</span>
+<span class="l">            <span class="c-com">PASS: 63 passed</span> <span class="c-flag">&larr; nothing noticed</span></span>
+<span class="l">  <span class="c-dim">UNREACHED</span> <span class="c-cmd">web/app/src/App.vue</span> hunk 1</span>
+<span class="l">            <span class="c-com">not run — the Go runner cannot observe this file</span></span>
       </div>
     </div>
   </div>
@@ -734,52 +488,165 @@ footer a:hover{color:var(--cyan)}
 
 <div class="divider"></div>
 
-<!-- ============ FINAL CTA ============ -->
-<section id="github" class="final wrap">
-  <div class="sec-tag reveal" style="justify-content:center"><span class="num">08</span> open source</div>
-  <h2 class="reveal">The protocol belongs to everyone.</h2>
-  <p class="reveal">MIT licensed. A Postgres schema and a reference MCP server that works with any MCP agent. Take it, run it, break it, send it back better.</p>
-  <div class="final-cta reveal">
-    <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener" class="btn btn-primary btn-lg">★ Star on GitHub</a>
-    <a href="https://github.com/earfman/coretexa/blob/main/QUEUE-PROTOCOL.md" target="_blank" rel="noopener" class="btn btn-ghost btn-lg">Read the protocol</a>
-  </div>
-  <p class="honest reveal">early, solo, and MIT — PRs welcome (they go through the queue).</p>
-</section>
-
-<!-- ============ FOOTER ============ -->
-<section style="padding:56px 0;border-top:1px solid var(--hair)">
-  <div class="wrap">
-    <div style="background:linear-gradient(180deg,rgba(34,211,238,.06),transparent);border:1px solid var(--line);border-radius:14px;padding:30px 28px;display:flex;gap:24px;align-items:center;flex-wrap:wrap;justify-content:space-between">
-      <div style="max-width:640px">
-        <div style="font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px">Hosted &middot; the gate</div>
-        <div style="font-family:var(--sans);font-weight:600;font-size:22px;color:var(--white);line-height:1.25;margin-bottom:8px">Want this pointed at your pull requests?</div>
-        <p style="color:var(--ink);font-size:15px">Coretexa's hosted gate is this same principle &mdash; the doer can't grade its own work &mdash; applied to agent-authored PRs. It reproduces the bug or refutes the fix, with a receipt. The protocol, as a service.</p>
-      </div>
-      <a href="/verify.html" style="font-family:var(--mono);font-size:14px;padding:13px 22px;border-radius:6px;background:var(--cyan);color:#04121f;font-weight:600;white-space:nowrap">See the gate &rarr;</a>
+<!-- ================= VERDICTS ================= -->
+<section class="wrap" id="verdicts">
+  <div class="sec-tag"><span class="num">03</span> The verdicts</div>
+  <h2 style="font-size:clamp(26px,3.2vw,38px);margin-bottom:14px">Five answers. It refuses to guess between them.</h2>
+  <p style="max-width:720px;color:var(--ink-dim);font-size:16px">A finding is only reported when the mapping from test to code was <em>proved</em>, not inferred. When it cannot prove one, it says so instead of picking the interesting answer.</p>
+  <div class="gates">
+    <div class="gate v-bad reveal">
+      <span class="gn">[!!]</span>
+      <h4><code>NO_GATE</code></h4>
+      <p>A behavioural change can be reverted with the pull request&rsquo;s own tests still passing. The tests do not detect the fix.</p>
+    </div>
+    <div class="gate v-ok reveal">
+      <span class="gn">[ok]</span>
+      <h4><code>GATE_HOLDS</code></h4>
+      <p>Reverting the source makes the new tests fail. They really do gate the change. This is the good case, and the common one.</p>
+    </div>
+    <div class="gate v-ok reveal">
+      <span class="gn">[ok]</span>
+      <h4><code>GATE_HOLDS_BUILD</code></h4>
+      <p>The revert does not compile, so the change is load-bearing at build time. Weaker evidence than a failing assertion, and labelled as such.</p>
+    </div>
+    <div class="gate v-dim reveal">
+      <span class="gn">[--]</span>
+      <h4><code>NO_NEW_TESTS</code></h4>
+      <p>There is nothing to run. The pull request changes behaviour and adds no test that could observe it.</p>
+    </div>
+    <div class="gate v-dim reveal">
+      <span class="gn">[??]</span>
+      <h4><code>INCONCLUSIVE</code></h4>
+      <p>The experiment could not be run cleanly. Reported honestly, with the reason, rather than dressed up as a pass.</p>
     </div>
   </div>
+  <div class="langs">
+    <span>Python</span><span>JavaScript / TypeScript</span><span>Go</span><span>Rust</span><span class="exp">Java (experimental)</span><span class="exp">anything else via <code>test-command</code></span>
+  </div>
 </section>
+
+<div class="divider"></div>
+
+<!-- ================= QUICK START ================= -->
+<section class="wrap" id="start">
+  <div class="sec-tag"><span class="num">04</span> Quick start</div>
+  <h2 style="font-size:clamp(26px,3.2vw,38px);margin-bottom:14px">Paste one file. There is no step two.</h2>
+  <p style="max-width:720px;color:var(--ink-dim);font-size:16px;margin-bottom:34px">No account, no API key, no service to sign up for. It installs nothing &mdash; the whole thing is the Python standard library.</p>
+  <div class="term" style="font-size:12.5px;max-width:820px">
+    <div class="term-bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="t">.github/workflows/coretexa-verify.yml</span></div>
+    <div class="term-body">
+<span class="l"><span class="c-key">name</span>: coretexa-verify</span>
+<span class="l"><span class="c-key">on</span>: pull_request</span>
+<span class="l"></span>
+<span class="l"><span class="c-key">permissions</span>:</span>
+<span class="l">  <span class="c-key">contents</span>: read</span>
+<span class="l">  <span class="c-key">pull-requests</span>: write   <span class="c-com"># only for the PR comment</span></span>
+<span class="l"></span>
+<span class="l"><span class="c-key">jobs</span>:</span>
+<span class="l">  <span class="c-key">verify</span>:</span>
+<span class="l">    <span class="c-key">runs-on</span>: ubuntu-latest</span>
+<span class="l">    <span class="c-key">steps</span>:</span>
+<span class="l">      - <span class="c-key">uses</span>: actions/checkout@v4</span>
+<span class="l">        <span class="c-key">with</span>:</span>
+<span class="l">          <span class="c-key">fetch-depth</span>: 0            <span class="c-com"># we need the merge base</span></span>
+<span class="l">      - <span class="c-key">uses</span>: <span class="c-str">earfman/coretexa-verify@v1</span></span>
+<span class="l">        <span class="c-key">with</span>:</span>
+<span class="l">          <span class="c-key">github-token</span>: ${{ secrets.GITHUB_TOKEN }}</span>
+    </div>
+  </div>
+  <p class="mono" style="font-size:12.5px;color:var(--ink-dim);margin-top:18px">It posts a comment and a status check. Non-blocking by default &mdash; it never wedges your merge queue.</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- ================= A REAL CATCH ================= -->
+<section class="wrap" id="catch">
+  <div class="sec-tag"><span class="num">05</span> A real catch</div>
+  <h2 style="font-size:clamp(26px,3.2vw,38px);margin-bottom:26px">Refuted, ignored, merged &mdash; then fixed upstream.</h2>
+  <div class="catch reveal">
+    <div class="ch">
+      <span class="verd">REFUTED &middot; reproduced</span>
+      <span class="repo">SollanSystems/loop-engineer #80</span>
+      <span class="mono" style="font-size:12px;color:var(--ink-dim)">&ldquo;Prevent EventStore reads from creating -wal/-shm sidecars&rdquo;</span>
+    </div>
+    <div class="cb">
+      <p>The fix works on a clean store. But when a crash leaves an <code class="mono">events.db-wal</code> behind, the read path falls back to <code class="mono">mode=ro</code> and SQLite creates a <code class="mono">-shm</code> sidecar anyway &mdash; the exact thing the pull request promises to prevent. Its own new test only covers the clean branch, so it passes green while the real case leaks. Two automated reviewers looked at this pull request and missed it.</p>
+      <div class="term" style="font-size:12px">
+        <div class="term-body">
+<span class="l"><span class="c-com"># crash-left state on disk: events.db + events.db-wal (no -shm)</span></span>
+<span class="l"><span class="c-cmd">files before read:</span> ['events.db', 'events.db-wal']</span>
+<span class="l"><span class="c-cmd">files after read :</span> ['events.db', <span class="c-bad">'events.db-shm'</span>, 'events.db-wal']</span>
+<span class="l"><span class="c-flag">RESULT: -shm sidecar created by a READ? True</span></span>
+        </div>
+      </div>
+      <p class="epi"><b>Epilogue.</b> The pull request was merged anyway, two days later, unchanged, on green CI. So we filed the leak as an issue with a script that seeds the crash state its test never builds. The maintainer fixed it in <b>PR #89</b> &mdash; rejecting both shortcuts the issue named &mdash; and closed the issue as completed. The refute was right. It just needed somewhere a merge could not scroll past it.</p>
+    </div>
+  </div>
+  <p style="margin-top:26px;color:var(--ink-dim);font-size:15px;max-width:760px">More of these &mdash; including the ones that came back clean, which matter just as much &mdash; are on the <a href="/proof.html" style="color:var(--cyan);border-bottom:1px solid var(--cyan-dim)">proof page</a>.</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- ================= WHAT IT CANNOT DO ================= -->
+<section class="wrap" id="cannot">
+  <div class="sec-tag"><span class="num">06</span> What it cannot tell you</div>
+  <h2 style="font-size:clamp(26px,3.2vw,38px);margin-bottom:12px">The limits, up front.</h2>
+  <p style="max-width:760px;color:var(--ink-dim);font-size:16px">A tool that claims to catch everything is a tool you cannot trust on anything. This one answers a single narrow question, and these are the questions it does not answer.</p>
+  <ul class="cannot">
+    <li><b>Whether the fix is correct</b>A perfectly correct fix with no test is <code class="mono">NO_GATE</code>. A subtly wrong fix with a test that pins the wrong behaviour is <code class="mono">GATE_HOLDS</code>. It measures whether a change is observable, never whether it is right.</li>
+    <li><b>Whether the change covers every case</b><code class="mono">GATE_HOLDS</code> means the tests notice this change. It says nothing about the case the author never considered &mdash; which is exactly how the loop-engineer bug above survived.</li>
+    <li><b>Anything about code the runner cannot reach</b>Frontend assets under a Go test runner, dependency manifests, generated files. These are reported as unreachable rather than silently counted.</li>
+    <li><b>Whether the pull request should be merged</b>It produces one piece of evidence for a human decision. It is non-blocking by default for exactly that reason.</li>
+  </ul>
+</section>
+
+<div class="divider"></div>
+
+<!-- ================= OPEN SOURCE ================= -->
+<section class="wrap proof" id="open">
+  <div class="sec-tag" style="justify-content:center">Open source</div>
+  <p class="proof-quote">Everything it says, it established by running something.</p>
+  <div class="stats">
+    <div class="stat"><span class="dim-line"></span><div class="num">0</div><div class="cap">dependencies &mdash; pure stdlib</div></div>
+    <div class="stat amber"><span class="dim-line"></span><div class="num">507</div><div class="cap">unit tests, no network needed</div></div>
+    <div class="stat"><span class="dim-line"></span><div class="num">5</div><div class="cap">languages supported</div></div>
+  </div>
+  <p class="proof-sub">MIT licensed. Runs entirely on your runner &mdash; no telemetry, no analytics, and no network access beyond git and the token you hand it. Secrets are stripped from the environment of every subprocess that runs your repository&rsquo;s code, so a pull request cannot read your workflow token out of a test.</p>
+  <div class="hero-cta" style="justify-content:center;margin-top:30px">
+    <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary btn-lg">★ Star on GitHub</a>
+    <a href="https://github.com/earfman/coretexa-verify#readme" target="_blank" rel="noopener" class="btn btn-ghost btn-lg">Read the docs</a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ================= FINAL ================= -->
+<section class="final wrap">
+  <h2>Find out before you merge.</h2>
+  <p>One file in <code class="mono" style="color:var(--amber)">.github/workflows</code>. It runs on your own runner, costs you nothing, and tells you the one thing a green check never will.</p>
+  <div class="final-cta">
+    <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Add the check to your repo</a>
+    <a href="/proof.html" class="btn btn-ghost btn-lg">See what it caught</a>
+  </div>
+  <p class="honest">early, solo, and MIT &mdash; issues and pull requests welcome</p>
+</section>
+
 <footer>
   <div class="foot-in">
     <span><b style="color:var(--white);letter-spacing:.12em">CORETEXA</b> <span class="dot">·</span> coretexa.dev</span>
-    <span>MIT <span class="dot">·</span> 2026 <span class="dot">·</span> the agent that does the work can't close it</span>
-    <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener">GitHub →</a>
+    <span>MIT <span class="dot">·</span> 2026 <span class="dot">·</span> a test that passes without the fix was never a gate</span>
+    <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener">GitHub →</a>
   </div>
 </footer>
 
 <script>
 (function(){
   "use strict";
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // mobile nav
   var nav = document.getElementById('nav'), tog = document.getElementById('navToggle');
   if(tog){ tog.addEventListener('click', function(){ nav.classList.toggle('open'); }); }
   Array.prototype.forEach.call(document.querySelectorAll('.nav-links a'), function(a){
     a.addEventListener('click', function(){ nav.classList.remove('open'); });
   });
-
-  // scroll reveal
   if('IntersectionObserver' in window){
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
@@ -787,46 +654,6 @@ footer a:hover{color:var(--cyan)}
     Array.prototype.forEach.call(document.querySelectorAll('.reveal'), function(el){ io.observe(el); });
   } else {
     Array.prototype.forEach.call(document.querySelectorAll('.reveal'), function(el){ el.classList.add('in'); });
-  }
-
-  // token traveling the pipeline (happy path) — desktop horizontal + mobile vertical
-  function isVisible(el){ return !!(el && el.getClientRects().length); }
-  var runners = [];
-  function makeRunner(el, pts){
-    if(!el) return;
-    return { el:el, pts:pts, seg:0, t:0, dur:46 };
-  }
-  runners.push(makeRunner(document.getElementById('token'), [
-    [104,130],[264,130],[424,130],[584,130],[744,130],[884,130]
-  ]));
-  runners.push(makeRunner(document.getElementById('token-m'), [
-    [121,40],[121,126],[121,212],[121,362],[121,462]
-  ]));
-  runners = runners.filter(Boolean);
-
-  if(!reduce && runners.length){
-    var paused = false;
-    document.addEventListener('visibilitychange', function(){ paused = document.hidden; });
-    function step(r){
-      if(!isVisible(r.el)){ return; }
-      var a = r.pts[r.seg], b = r.pts[r.seg+1];
-      if(!b){ r.seg = 0; return; }
-      var e = r.t/r.dur;
-      var ease = e<.5 ? 2*e*e : -1+(4-2*e)*e;
-      r.el.setAttribute('cx', a[0]+(b[0]-a[0])*ease);
-      r.el.setAttribute('cy', a[1]+(b[1]-a[1])*ease);
-      var last = r.seg === r.pts.length-2;
-      r.el.setAttribute('opacity', (last && e>.6) ? (1-(e-.6)/.4) : 1);
-      r.t++;
-      if(r.t>r.dur){ r.t=0; r.seg++; if(r.seg>=r.pts.length-1){ r.seg=0; } }
-    }
-    function frame(){
-      if(!paused){ for(var i=0;i<runners.length;i++){ step(runners[i]); } }
-      requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
-  } else {
-    runners.forEach(function(r){ r.el.setAttribute('opacity','0'); });
   }
 })();
 </script>

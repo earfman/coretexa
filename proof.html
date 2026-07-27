@@ -368,6 +368,17 @@ footer a:hover{color:var(--cyan)}
 .next li::before{content:"◇";color:var(--amber)}
 .honest{border:1px dashed var(--line-2);border-radius:9px;padding:16px 20px;margin-top:22px;color:var(--ink-dim);font-size:14px;font-family:var(--mono)}
 .honest b{color:var(--ink)}
+
+/* ---- nav fits between phone and desktop (added 2026-07-27) ---- */
+@media(max-width:900px){ .tag-mit{display:none} }
+@media(max-width:830px){
+  .btn-primary.desk{display:none}
+  .nav-links{gap:16px;font-size:12px}
+}
+@media(max-width:620px){
+  .nav-in{flex-wrap:wrap;row-gap:10px}
+  .nav-links{margin-left:0;width:100%;gap:14px;flex-wrap:wrap}
+}
 </style>
 
 </head>
@@ -384,11 +395,10 @@ footer a:hover{color:var(--cyan)}
     <span class="tag-mit">MIT · open source</span>
     <div class="nav-links">
       <a href="/#how">How it works</a>
-      <a href="/#protocol">Protocol</a>
-      <a href="/verify.html">Verify PRs</a>
+      <a href="/#verdicts">Protocol</a>
       <a href="/proof.html" style="color:var(--cyan)">Proof</a>
       <a href="/blog.html">Writing</a>
-      <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener">GitHub</a>
     </div>
     <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary desk">Add the check</a>
     <button class="nav-toggle" id="navToggle" aria-label="Menu">≡</button>
@@ -514,7 +524,7 @@ footer a:hover{color:var(--cyan)}
       </div>
       <h3>One unsupported key in a JWKS rejected <span style="color:var(--white)">every</span> token &mdash; on the MCP auth path</h3>
       <p>FastMCP&rsquo;s <code>JWTVerifier</code> converted every key in a remote JWKS up front with no per-key guard, so a single Ed25519 key (which Rauthy and Ory Hydra publish next to their RSA keys) made the whole set fail &mdash; every token rejected, including ones validly RSA-signed. The fix skips unusable keys per RFC 7517 instead of letting one poison the set. First bug run through our new automated <b style="color:var(--white)">find&rarr;fix&rarr;verify&rarr;stage</b> pipeline, then held for a human to approve posting.</p>
-      <div class="catch"><b>Catch (and a first):</b> the verifier&rsquo;s 20 adversarial probes couldn&rsquo;t break the code &mdash; but it caught the write-up calling the change &ldquo;behavior identical&rdquo; (it wasn&rsquo;t; full inventory now in the PR), a missed hardening case, and &mdash; the notable one &mdash; a <b style="color:var(--white)">sanction ruling</b>: the issue reporter had offered a PR, so posting silently would have appropriated their diagnosis. We led the PR with credit to them and offered co-authorship on the issue. The protocol&rsquo;s own no-self-ship rule, applied to us: the doer staged, a human shipped.</div>
+      <div class="catch"><b>Catch (and a first):</b> the verifier&rsquo;s 20 adversarial probes couldn&rsquo;t break the code &mdash; but it caught the write-up calling the change &ldquo;behavior identical&rdquo; (it wasn&rsquo;t; full inventory now in the PR), a missed hardening case, and &mdash; the notable one &mdash; a <b style="color:var(--white)">sanction ruling</b>: the issue reporter had offered a PR, so posting silently would have appropriated their diagnosis. We led the PR with credit to them and offered co-authorship on the issue. Our own no-self-ship rule, applied to us: the doer staged, a human shipped.</div>
       <p style="font-size:13px;margin-top:8px"><b style="color:var(--ok)">Full arc, same day:</b> 90 minutes after posting, the repo&rsquo;s Require Issue Link bot auto-closed the PR (issue not yet assigned to the author &mdash; a process gate our scouting missed; we logged the miss here the hour it happened). One assignment-request comment later: a maintainer assigned the issue, the PR auto-reopened, and it was <b style="color:var(--ok)">merged the same evening</b> &mdash; the benchmark&rsquo;s second merge. The reporter&rsquo;s reply: &ldquo;Your version is better than what I&rsquo;d have sent.&rdquo; Crediting their diagnosis cost one sentence and earned an endorsement.</p>
       <div class="links">
         <a href="https://github.com/PrefectHQ/fastmcp/pull/4517" target="_blank" rel="noopener">Pull request #4517 &rarr;</a>
@@ -644,7 +654,7 @@ footer a:hover{color:var(--cyan)}
       </div>
       <h3><code>= ANY(array)</code> on an indexed column returned no rows</h3>
       <p>An index optimization compared an indexed column against the whole array value instead of element-wise, silently returning nothing. A two-year-old open issue. The fix skips the scalar-index path for <code>ANY</code>/<code>ALL</code>.</p>
-      <div class="catch"><b>Catch:</b> before a single line was filed, verification discipline <span class="em">killed three wrong leads</span> — a "recursive-CTE bug" that was an unimplemented feature, a "uuid-specific" bug that was actually general, and a wrong initial reproduction. The protocol's value showed up as bugs <em>not</em> filed.</div>
+      <div class="catch"><b>Catch:</b> before a single line was filed, verification discipline <span class="em">killed three wrong leads</span> — a "recursive-CTE bug" that was an unimplemented feature, a "uuid-specific" bug that was actually general, and a wrong initial reproduction. The discipline's value showed up as bugs <em>not</em> filed.</div>
       <div class="links">
         <a href="https://github.com/oguimbal/pg-mem/pull/477" target="_blank" rel="noopener">Pull request #477 →</a>
         <a href="https://github.com/oguimbal/pg-mem/issues/338" target="_blank" rel="noopener">Issue #338 →</a>
@@ -658,7 +668,7 @@ footer a:hover{color:var(--cyan)}
 
 <section class="wrap">
   <div class="sec-tag"><span class="num">REFUTE</span> verifying other agents&rsquo; pull requests</div>
-  <p class="proof-sub" style="text-align:left;margin:0 0 18px">A second front, opened 07-24. AI-authored PRs now merge on green CI &mdash; written by one bot, reviewed by another, rubber-stamped by a human. We point the same hostile verifier at <b style="color:var(--white)">other agents&rsquo; open PRs</b>: reproduce the claim in a pristine tree, then try to break it. A finding posts only when the failure reproduces deterministically &mdash; and every one below survived that gate <span class="em">after</span> the PR&rsquo;s own CI passed and its AI reviewers signed off. This discipline, packaged for your repo, is <a href="/verify.html" style="color:var(--cyan)">the gate &rarr;</a></p>
+  <p class="proof-sub" style="text-align:left;margin:0 0 18px">A second front, opened 07-24. AI-authored PRs now merge on green CI &mdash; written by one bot, reviewed by another, rubber-stamped by a human. We point the same hostile verifier at <b style="color:var(--white)">other agents&rsquo; open PRs</b>: reproduce the claim in a pristine tree, then try to break it. A finding posts only when the failure reproduces deterministically &mdash; and every one below survived that gate <span class="em">after</span> the PR&rsquo;s own CI passed and its AI reviewers signed off. The mechanical half of this discipline &mdash; can the PR&rsquo;s own tests fail? &mdash; is packaged as <a href="https://github.com/earfman/coretexa-verify" style="color:var(--cyan)">a free check for your repo &rarr;</a></p>
   <div class="log">
 
     <article class="entry">
@@ -742,7 +752,7 @@ footer a:hover{color:var(--cyan)}
     <div class="mcard">
       <h3>What we count — and why catches lead</h3>
       <ul>
-        <li><b>Verifier catches</b> — work that would have shipped wrong. The number that proves the protocol.</li>
+        <li><b>Verifier catches</b> — work that would have shipped wrong. The number that proves the discipline.</li>
         <li><b>Self-closes: 0</b> — an invariant, enforced by actor identity, not an outcome.</li>
         <li><b>Merges</b> — a contributor metric, tracked but not the point.</li>
         <li><b>Refutes</b> — the same hostile pass pointed at other agents&rsquo; green PRs; posted only when the break reproduces deterministically, dropped silently when someone else surfaced it first.</li>
@@ -776,7 +786,7 @@ footer a:hover{color:var(--cyan)}
         <li>Twelve fix runs: <b>eleven verifier catches</b> — three false-green test suites (rust-url, szio, QuantEcon), a mis-parsed binary header eating 1.36GB, an un-reloadable "fix", a locale-dependent encoding crash, overstated evidence, an overstated blast radius, a misstated regression scope — <b>and one honest first-pass-correct</b> run, reported as such.</li>
         <li><b>Twice the verifier caught our own tests, not our code</b> — a green suite that cannot fail is worth nothing, so a fix ships only once its test has proven it can fail.</li>
         <li><b>Five bot PRs refuted</b> — each one green in CI and cleared by its AI reviewers before our verifier broke it with a deterministic repro. One refute was ignored and merged anyway; it became a public issue with a seeded-crash regression recipe the same day.</li>
-        <li>Across TypeScript, Python, Rust, Go, and Java &mdash; including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, Google&rsquo;s gson, and the FastMCP auth layer. The protocol isn&rsquo;t tied to one stack.</li>
+        <li>Across TypeScript, Python, Rust, Go, and Java &mdash; including GitHub&rsquo;s own <code>gh</code> CLI, the MCP reference SDK, Google&rsquo;s gson, and the FastMCP auth layer. The check isn&rsquo;t tied to one stack.</li>
         <li>The value isn't "AI wrote a patch." It's <b>a second actor stopped a bad one from closing</b> — and, when there was nothing to stop, said so.</li>
       </ul>
     </div>
@@ -789,7 +799,7 @@ footer a:hover{color:var(--cyan)}
   <div class="foot-in">
     <span><b style="color:var(--white);letter-spacing:.12em">CORETEXA</b> <span class="dot">·</span> coretexa.dev</span>
     <span>MIT <span class="dot">·</span> 2026 <span class="dot">·</span> the agent that does the work can't close it</span>
-    <a href="https://github.com/earfman/coretexa" target="_blank" rel="noopener">GitHub →</a>
+    <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener">GitHub →</a>
   </div>
 </footer>
 <script>
