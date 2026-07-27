@@ -9,30 +9,33 @@ changed — and now you know that before you merge, not six months later.
 
 The tool lives in its own repository:
 
-### → **[github.com/earfman/coretexa-verify](https://github.com/earfman/coretexa-verify)**
+### → **[github.com/earfman/coretexa-verify](https://github.com/earfman/coretexa-verify)** · [on the GitHub Marketplace](https://github.com/marketplace/actions/coretexa-verify)
 
 ```yaml
 # .github/workflows/coretexa-verify.yml
 name: coretexa-verify
 on: pull_request
 permissions:
-  contents: read
-  pull-requests: write
+  contents: read          # read-only: nothing here can write to your repo
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0    # required: we need the merge base
       - uses: earfman/coretexa-verify@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-Runs entirely on your own runner. Zero dependencies — pure Python standard
-library. No telemetry. Python, JavaScript/TypeScript, Go, Rust, and Java
-(experimental), plus a `test-command` escape hatch for anything else. MIT.
+The verdict goes to the job summary, so the minimal install needs no token and
+no write permission. Add `pull-requests: write` and a `github-token` if you want
+it as a PR comment instead.
+
+Runs entirely on your own runner. No runtime dependencies of its own — it is
+pure Python standard library, though by default it does install *your* project's
+declared test dependencies, because it has to run your tests. No telemetry.
+Python, JavaScript/TypeScript, Go, Rust, and Java (experimental), plus a
+`test-command` escape hatch for anything else. MIT.
 
 ---
 
