@@ -395,12 +395,13 @@ footer a:hover{color:var(--cyan)}
     <span class="tag-mit">MIT · open source</span>
     <div class="nav-links">
       <a href="/#how">How it works</a>
-      <a href="/#verdicts">Protocol</a>
+      <a href="/#verdicts">Verdicts</a>
+      <a href="/#start">Quick start</a>
       <a href="/proof.html" style="color:var(--cyan)">Proof</a>
       <a href="/blog.html">Writing</a>
       <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener">GitHub</a>
     </div>
-    <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary desk">Add the check</a>
+    <a href="https://github.com/marketplace/actions/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary desk">Get it</a>
     <button class="nav-toggle" id="navToggle" aria-label="Menu">≡</button>
   </div>
 </nav>
@@ -411,17 +412,17 @@ footer a:hover{color:var(--cyan)}
   <div class="sec-tag kicker"><span class="num">PROOF</span> verification benchmark · a living log</div>
   <h1>We let a second agent <span class="hl">try to break</span> our own fixes.</h1>
   <p class="sub">Coretexa is the rule that the agent which does the work can't close it. This is the receipt: every time we run the loop against a real open-source bug, an independent verifier tries to refute the fix before it ships. Here is what it caught.</p>
-  <p class="updated">last updated <b>2026-07-25</b> · <span class="live">● live</span> — appended as runs happen</p>
+  <p class="updated">last updated <b>2026-07-27</b> · <span class="live">● live</span> — appended as runs happen</p>
 
   <div class="score">
-    <div class="cell"><div class="k">Fix runs</div><div class="v">12</div></div>
+    <div class="cell"><div class="k">Fix runs</div><div class="v">19<small> + 3 reported</small></div></div>
     <div class="cell"><div class="k">Bot PRs refuted</div><div class="v">5<small> / 1 fixed</small></div></div>
-    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">11<small>/12</small></div></div>
+    <div class="cell hero-cell"><div class="k">Verifier catches</div><div class="v">11<small> of 12 written up</small></div></div>
     <div class="cell"><div class="k">First-pass-correct</div><div class="v">1</div></div>
-    <div class="cell"><div class="k">Self-closes</div><div class="v">0</div></div>
+    <div class="cell"><div class="k">Withdrawn by us</div><div class="v">1<small> duplicate</small></div></div>
     <div class="cell hero-cell"><div class="k">Merged</div><div class="v">5<small> / 11 in review</small></div></div>
   </div>
-  <p class="proof-sub" style="text-align:left;margin:14px 0 0"><b style="color:var(--ok)">Five merges landed:</b> a Bazel maintainer merged the <code>buildtools</code> fix into <code>bazelbuild:main</code> (Google/Bazel core tooling); the FastMCP auth fix merged the same evening it posted; and &mdash; the marquee &mdash; a Google maintainer merged the <code>gson</code> fix into <code>google/gson</code> after running it through Google&rsquo;s full internal test suite first (a library with 1B+ downloads). Ecosystems: TypeScript · Python · Rust · Go · Java — including GitHub&rsquo;s own <code>gh</code> CLI and the MCP reference SDK. Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim a perfect catch rate &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything. The fourth merge landed 07-25: a Sollumz maintainer merged the <code>szio</code> fix <b style="color:var(--white)">six hours after a user filed the bug</b> &mdash; and it was the <em>second</em> version of that fix, because the verifier killed the first one for silently corrupting data while all 291 tests passed. Also in flight: <code>superfile</code> (a 1.36GB memory blowup traced to a mis-parsed video header) and <code>QuantEcon.py</code>. The fifth merge landed 07-27: <code>git-machete</code>, after four rounds of review across nine commits &mdash; the maintainer invited us as a collaborator partway through. Meanwhile the same hostile-verification discipline opened a second front: <b style="color:var(--white)">refuting other agents&rsquo; green-CI pull requests</b> (see REFUTE, below).</p>
+  <p class="proof-sub" style="text-align:left;margin:14px 0 0"><b style="color:var(--ok)">Five merges landed:</b> a Bazel maintainer merged the <code>buildtools</code> fix into <code>bazelbuild:main</code> (Google/Bazel core tooling); the FastMCP auth fix merged the same evening it posted; and &mdash; the marquee &mdash; a Google maintainer merged the <code>gson</code> fix into <code>google/gson</code> after running it through Google&rsquo;s full internal test suite first (a library with 1B+ downloads). Ecosystems: TypeScript · Python · Rust · Go · Java — including GitHub&rsquo;s own <code>gh</code> CLI and the MCP reference SDK. Run 6 is the first <b style="color:var(--white)">first-pass-correct</b> run: the doer nailed it and the verifier said so. We report that honestly rather than claim a perfect catch rate &mdash; a catch rate you can&rsquo;t distinguish from a clean pass isn&rsquo;t worth anything. The fourth merge landed 07-25: a Sollumz maintainer merged the <code>szio</code> fix <b style="color:var(--white)">six hours after a user filed the bug</b> &mdash; and it was the <em>second</em> version of that fix, because the verifier killed the first one for silently corrupting data while all 291 tests passed. Also in flight: <code>superfile</code> (a 1.36GB memory blowup traced to a mis-parsed video header) and <code>QuantEcon.py</code>. The fifth merge landed 07-27: <code>git-machete</code>, after four rounds of review across nine commits &mdash; the maintainer invited us as a collaborator partway through. On <code>croniter</code>, a Pallets-eco maintainer diffed <b style="color:var(--white)">8,012 schedule expansions</b> to characterise the blast radius himself before approving in principle &mdash; the most rigorous review any of this work has received, and worth more to us than the merge. Two entries below are not wins: a <code>pydantic</code> PR closed by policy because we read the PR template and not the contributing guide, and a <code>cachetools</code> fix we withdrew as a duplicate of an open PR our own check missed. Runs 1&ndash;12 carry the full catch write-ups; 13&ndash;19 are logged in brief. Meanwhile the same hostile-verification discipline opened a second front: <b style="color:var(--white)">refuting other agents&rsquo; green-CI pull requests</b> (see REFUTE, below).</p>
 
   <div class="callout">
     <h3>A passing test suite lied — and the verifier caught it.</h3>
@@ -436,6 +437,57 @@ footer a:hover{color:var(--cyan)}
 <section class="wrap">
   <div class="sec-tag"><span class="num">LOG</span> the run history</div>
   <div class="log">
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-27</span>
+        <span class="repo">pydantic/pydantic #13507</span>
+        <span class="badge lang">Python</span>
+        <span class="badge" style="color:var(--ink-dim);border-color:var(--line)">closed &middot; policy</span>
+      </div>
+      <h3>Every constraint chained after <code>ge</code>/<code>lt</code>/<code>le</code> vanished from the published JSON schema</h3>
+      <p>In pydantic&rsquo;s experimental <code>pipeline</code> API, <code>validate_as(int).ge(0).multiple_of(2)</code> emitted a JSON schema carrying only the <code>ge</code>. The dropped constraint still <em>ran</em> at validation time &mdash; so the model rejected odd numbers while the schema it published said they were fine. Every consumer downstream of that schema &mdash; a generated client, an OpenAPI document, a form builder &mdash; would have disagreed with the server, and nothing would have logged an error anywhere.</p>
+      <p style="font-size:13px;margin-top:8px"><b style="color:var(--amber)">Closed by policy, and the mistake was ours.</b> A bot closed the pull request within minutes: pydantic requires a contributor to be assigned to the referenced issue before opening one. That rule is stated plainly in <code>docs/contributing.md</code> &mdash; a file that was sitting in our own checkout, unread. We read the PR template and not the contributing guide. The issue stands open on its merits; the PR is logged here as a process failure, not a technical one.</p>
+      <div class="links">
+        <a href="https://github.com/pydantic/pydantic/issues/13507" target="_blank" rel="noopener">Issue #13507 &rarr;</a>
+        <a href="https://github.com/pydantic/pydantic/pull/13508" target="_blank" rel="noopener">Pull request #13508 (closed) &rarr;</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-26</span>
+        <span class="repo">knadh/koanf #434</span>
+        <span class="badge lang">Go</span>
+        <span class="badge open">PR open</span>
+      </div>
+      <h3><code>Int64</code> returned <span style="color:var(--white)">the most negative number</span> for the largest positive one</h3>
+      <p><code>koanf.Int64</code> falls through to a float round-trip for any non-integer input and finishes with <code>int64(f)</code>. Go leaves that conversion implementation-defined when the value is out of range; on amd64 and arm64 the hardware hands back the &ldquo;integer indefinite&rdquo; value, which is <code>math.MinInt64</code>. JSON is what makes it reachable from an ordinary config file, because <code>encoding/json</code> decodes every number to a <code>float64</code> and <code>float64(math.MaxInt64)</code> rounds <em>up</em> past the int64 range. So <code>{"n": 9223372036854775807}</code> &mdash; the largest legal int64 &mdash; read back as <code>-9223372036854775808</code>.</p>
+      <div class="catch"><b>The guard that does not work:</b> the obvious bound, <code>f &gt; math.MaxInt64</code>, is false for exactly the values that overflow. <code>math.MaxInt64</code> is an untyped constant, and it converts to the <span class="em">same float64</span> that the overflowing value rounds to, so the comparison never fires &mdash; a guard that looks right, compiles, and silently lets every bad value through. The fix bounds on <code>float64(1 &lt;&lt; 63)</code> instead. <code>float64(math.MinInt64)</code> <em>is</em> exactly representable, so it is correct on the low side; NaN compares false against everything and needs its own test.</div>
+      <div class="links">
+        <a href="https://github.com/knadh/koanf/issues/434" target="_blank" rel="noopener">Issue #434 &rarr;</a>
+        <a href="https://github.com/knadh/koanf/pull/435" target="_blank" rel="noopener">Pull request #435 &rarr;</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-25</span>
+        <span class="repo">gtk-rs/gtk4-rs #2345</span>
+        <span class="badge lang">Rust</span>
+        <span class="badge open">PR open</span>
+      </div>
+      <h3>A refactor moved eight methods onto a trait <span style="color:var(--white)">no widget subclass can reach</span></h3>
+      <p>Since 0.11.4, a gtk4-rs widget subclass with a custom class struct could no longer call <code>add_binding_action</code> from <code>class_init()</code> &mdash; nor <code>add_shortcut</code>, <code>install_property_action</code>, <code>query_action</code>, <code>activate_signal</code>, <code>layout_manager_type</code>, <code>css_name</code> or <code>accessible_role</code>. A commit titled &ldquo;allow calling Class methods on any widget&rdquo; moved all eight off <code>WidgetClassExt</code> (bounded on <code>ClassStruct</code>) and onto a new <code>WidgetClassManualExt</code> implemented for <code>glib::Class&lt;T&gt;</code>. Those two bounds are disjoint, so the methods became unreachable from precisely the place the documentation tells you to call them.</p>
+      <p style="font-size:13px;margin-top:8px"><b>The issue reported one method. All eight were gone.</b> The affected version window is not recoverable from the tags &mdash; <code>git tag --contains</code> on the offending commit returns nothing &mdash; so it was established by checking out released tags one at a time and compiling against each.</p>
+      <div class="links">
+        <a href="https://github.com/gtk-rs/gtk4-rs/issues/2345" target="_blank" rel="noopener">Issue #2345 &rarr;</a>
+        <a href="https://github.com/gtk-rs/gtk4-rs/pull/2346" target="_blank" rel="noopener">Pull request #2346 &rarr;</a>
+      </div>
+    </article>
 
     <article class="entry">
       <span class="corner tl"></span><span class="corner br"></span>
@@ -500,16 +552,102 @@ footer a:hover{color:var(--cyan)}
         <span class="date">2026-07-21</span>
         <span class="repo">VirtusLab/git-machete #1754</span>
         <span class="badge lang">Python</span>
-        <span class="badge open">in final review</span>
+        <span class="badge" style="color:var(--ground);background:var(--ok);border-color:var(--ok);font-weight:600">&#10003; MERGED</span>
         <span class="badge caught">&#10003; verifier caught</span>
       </div>
       <h3><code>discover</code>/<code>status</code> showed a <span style="color:var(--white)">different branch tree</span> in every worktree</h3>
       <p>git-machete inferred branch structure from the HEAD reflog &mdash; which is <span class="em">per-worktree</span> in git &mdash; so the same repo produced different discovered trees depending on which worktree you ran it from. The fix reads reflogs across all worktree HEADs. Found the same way as the szio bug: a fresh user-reported issue, hours old, race-checked immediately.</p>
       <div class="catch"><b>Catch:</b> the fix replaced a <code>git</code> subprocess call with direct file reads &mdash; and the hostile verifier caught that this silently dropped the subprocess&rsquo;s implicit strict-UTF-8 decode. On a non-UTF-8-locale environment (minimal containers, <code>LC_ALL=C</code> CI), one accented committer name in a reflog would have crashed the command &mdash; a regression the doer&rsquo;s green tests never touched. Fixed with an explicit <code>utf-8</code>/<code>surrogateescape</code> read that is strictly more robust than the old path.</div>
-      <p style="font-size:13px;margin-top:8px"><b style="color:var(--ok)">In review:</b> the maintainer&rsquo;s verdict on 07-24 was &ldquo;mostly ready to go&rdquo;; both final review items were addressed the same day. If it lands, it&rsquo;s merge four.</p>
+      <p style="font-size:13px;margin-top:8px"><b style="color:var(--ok)">Merged 07-27:</b> nine commits across four rounds of review &mdash; the longest engagement on the board, and the one that produced the most correction. The maintainer issued a collaborator invite partway through. Merge five.</p>
       <div class="links">
         <a href="https://github.com/VirtusLab/git-machete/pull/1755" target="_blank" rel="noopener">Pull request #1755 &rarr;</a>
         <a href="https://github.com/VirtusLab/git-machete/issues/1754" target="_blank" rel="noopener">Issue #1754 &rarr;</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-20</span>
+        <span class="repo">pallets-eco/croniter #246</span>
+        <span class="badge lang">Python</span>
+        <span class="badge open">PR open</span>
+        <span class="badge" style="color:var(--cyan);border-color:var(--cyan-dim)">&#9679; maintainer approved in principle</span>
+      </div>
+      <h3><code>59/15 * * * *</code> fired four times an hour &mdash; and never at :59</h3>
+      <p>When a step expression&rsquo;s start equals the field maximum, croniter expanded <code>{start}/{step}</code> to the <em>entire field</em>. A job scheduled <code>59/15 * * * *</code> ran at :00, :15, :30 and :45 &mdash; four times an hour, at none of which the user asked for. The same held in every field at its maximum: <code>23/6</code> in hours, <code>DEC/3</code> in months, <code>SAT/2</code> in day-of-week, <code>31/5</code> in day-of-month. The cause is a normalisation artefact read as user intent: <code>{start}/{step}</code> is rewritten to <code>{start}-{max}/{step}</code>, which at the maximum becomes <code>{max}-{max}/{step}</code> and falls into the branch meant for a user-written equal range like <code>Jan-Jan</code>, which croniter deliberately expands to the whole cycle.</p>
+      <div class="catch"><b>Reviewed by a Pallets-eco maintainer.</b> Jarek Potiuk (<code>potiuk</code>) did not take the claim on trust &mdash; he characterised the blast radius himself, diffing <code>.expanded</code> across <b style="color:var(--white)">8,012 cases</b> (4,006 generated expressions &times; two modes). 1,996 differ, every one of them containing a field-max <code>X/step</code> token, and none change error status. His verdict: &ldquo;approving in principle.&rdquo; He also caught two formatting violations the project&rsquo;s own CI structurally cannot &mdash; <code>tox -e fmt</code> runs <code>ruff format</code>, not <code>--check</code>. Exactly the failure mode this whole benchmark is about, found in the review of our own patch.</div>
+      <div class="links">
+        <a href="https://github.com/pallets-eco/croniter/pull/246" target="_blank" rel="noopener">Pull request #246 &rarr;</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-20</span>
+        <span class="repo">python-poetry/tomlkit #557</span>
+        <span class="badge lang">Python</span>
+        <span class="badge open">PR open</span>
+      </div>
+      <h3>A sub-table under a dotted key <span style="color:var(--white)">escaped its parent</span> and reappeared at the document root</h3>
+      <p>Given a document containing <code>[t]</code> with <code>a.b = 1</code>, assigning <code>doc["t"]["a"]["c"] = {}</code> rendered the header as <code>[a.c]</code> instead of <code>[t.a.c]</code>. The key left <code>t.a</code> and reappeared at the root, so <code>parse(dumps(doc)) != doc</code> &mdash; a round-trip data-loss bug in the library Poetry uses to rewrite your <code>pyproject.toml</code>. Array-of-tables had the same fault. In <code>Container._render_table</code> a single <code>prefix</code> argument was doing two incompatible jobs: the relative dotted-key prefix a leaf item needs, and the absolute header path a nested sub-table needs. The dotted-key branch dropped it entirely &mdash; right for the leaf, wrong for anything nested under it.</p>
+      <div class="catch"><b>This is the run where the mechanical half is visible in the PR itself.</b> The new tests were checked by reverting <code>container.py</code> to its base content while keeping them &mdash; and they fail, so they genuinely gate the change rather than passing alongside it. That check is the experiment now packaged as <a href="https://github.com/marketplace/actions/coretexa-verify" style="color:var(--cyan)">coretexa-verify</a>, and this is it run by hand on our own work before we asked anyone else to trust it.</div>
+      <div class="links">
+        <a href="https://github.com/python-poetry/tomlkit/pull/568" target="_blank" rel="noopener">Pull request #568 &rarr;</a>
+        <a href="https://github.com/python-poetry/tomlkit/issues/557" target="_blank" rel="noopener">Issue #557 &rarr;</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-19</span>
+        <span class="repo">jd/tenacity #658</span>
+        <span class="badge lang">Python</span>
+        <span class="badge open">PR open</span>
+      </div>
+      <h3><code>raise e from e</code> pinned a core at 100% forever &mdash; and <code>stop_after_attempt</code> could not stop it</h3>
+      <p><code>retry_if_exception_cause_type</code> walks the <code>__cause__</code> chain until it reaches <code>None</code>. A cyclic chain never does, and the simplest cycle is the one-liner <code>raise e from e</code>. What makes this worse than an ordinary hang is <em>where</em> it spins: inside the retry predicate. Tenacity only consults stop conditions <span class="em">after</span> the predicate returns, so <code>stop_after_attempt</code>, <code>stop_after_delay</code> and every other bound the user configured are unreachable. The stdlib <code>traceback</code> module guards against exactly these cause cycles when walking exception chains; tenacity did not.</p>
+      <p style="font-size:13px;margin-top:8px">The regression test hangs indefinitely on <code>main</code> and passes in milliseconds with the fix &mdash; bounded only by an external timeout, which is the honest way to write a test for a hang. Both cycle shapes are covered: the self-cause one-liner and a two-node <code>a &rarr; b &rarr; a</code>.</p>
+      <div class="links">
+        <a href="https://github.com/jd/tenacity/issues/658" target="_blank" rel="noopener">Issue #658 &rarr;</a>
+        <a href="https://github.com/jd/tenacity/pull/659" target="_blank" rel="noopener">Pull request #659 &rarr;</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-19</span>
+        <span class="repo">tkem/cachetools #406</span>
+        <span class="badge lang">Python</span>
+        <span class="badge" style="color:var(--ink-dim);border-color:var(--line)">withdrawn &middot; duplicate</span>
+      </div>
+      <h3>An overwrite that looked like it worked left the <span style="color:var(--white)">old value readable</span> &mdash; and we filed a duplicate</h3>
+      <p><code>TLRUCache.__setitem__</code> skips storing an item whose <code>ttu</code> is already in the past. When the key already held a live value, the skip path returned without invalidating it: <code>key in cache</code> stayed <code>True</code> and <code>cache[key]</code> returned the <em>overwritten</em> value, after an assignment that raised nothing and looked like it succeeded. <code>TTLCache</code> does the opposite &mdash; store, then expire &mdash; so a <code>ttl=0</code> overwrite there invalidates correctly. The two classes diverge in exactly the value-derived-<code>ttu</code> pattern the documentation recommends.</p>
+      <div class="catch"><b>Withdrawn by us &mdash; the only one so far.</b> PR #400 already fixed this bug and predated ours. Our duplicate check searched open <em>issues</em> and keyword-missed the open <em>pull request</em>. We closed ours the moment we saw it, credited the earlier author, and left the additional analysis on the issue where it might still be useful. The maintainer&rsquo;s reply &mdash; &ldquo;thanks for sharing, and providing additional analysis&rdquo; &mdash; was a kinder outcome than the process earned. It is in the log because a benchmark that quietly deletes its own misses is not a benchmark.</div>
+      <div class="links">
+        <a href="https://github.com/tkem/cachetools/issues/406" target="_blank" rel="noopener">Issue #406 &rarr;</a>
+        <a href="https://github.com/tkem/cachetools/pull/407" target="_blank" rel="noopener">Pull request #407 (withdrawn) &rarr;</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="top">
+        <span class="date">2026-07-20 &rarr; 07-27</span>
+        <span class="repo">aiocache #1081 &middot; cast #356 &middot; cobra #2463</span>
+        <span class="badge lang">Python &middot; Go</span>
+        <span class="badge open">reported, no PR</span>
+      </div>
+      <h3>Three reported and deliberately <span style="color:var(--white)">not patched</span></h3>
+      <p>Not every finding should arrive as a pull request. Each of these changes behaviour somebody may be relying on, so they went in as issues &mdash; reproduction, root cause, and the fix decision left where it belongs.</p>
+      <div class="catch"><b>aio-libs/aiocache #1081</b> &mdash; <code>clear(namespace="user")</code> on <code>SimpleMemoryCache</code> prefix-matches with no boundary, so it silently clears <code>user_sessions</code> too. The Valkey backend does not behave this way, so the two backends of the same API disagree about what a namespace is.<br><br><b>spf13/cast #356</b> &mdash; <code>ToInt64E(math.MaxUint64)</code> returns <code>-1</code> and no error. Out-of-range numeric conversions wrap silently across the API, in a library whose entire job is converting between types safely.<br><br><b>spf13/cobra #2463</b> &mdash; help output depends on the order you called <code>AddCommand</code>, because <code>CommandPathPadding</code> is snapshotted once and never recomputed. Reorder two registrations and your CLI&rsquo;s help text changes alignment.</div>
+      <div class="links">
+        <a href="https://github.com/aio-libs/aiocache/issues/1081" target="_blank" rel="noopener">aiocache #1081 &rarr;</a>
+        <a href="https://github.com/spf13/cast/issues/356" target="_blank" rel="noopener">cast #356 &rarr;</a>
+        <a href="https://github.com/spf13/cobra/issues/2463" target="_blank" rel="noopener">cobra #2463 &rarr;</a>
       </div>
     </article>
 
@@ -668,7 +806,7 @@ footer a:hover{color:var(--cyan)}
 
 <section class="wrap">
   <div class="sec-tag"><span class="num">REFUTE</span> verifying other agents&rsquo; pull requests</div>
-  <p class="proof-sub" style="text-align:left;margin:0 0 18px">A second front, opened 07-24. AI-authored PRs now merge on green CI &mdash; written by one bot, reviewed by another, rubber-stamped by a human. We point the same hostile verifier at <b style="color:var(--white)">other agents&rsquo; open PRs</b>: reproduce the claim in a pristine tree, then try to break it. A finding posts only when the failure reproduces deterministically &mdash; and every one below survived that gate <span class="em">after</span> the PR&rsquo;s own CI passed and its AI reviewers signed off. The mechanical half of this discipline &mdash; can the PR&rsquo;s own tests fail? &mdash; is packaged as <a href="https://github.com/earfman/coretexa-verify" style="color:var(--cyan)">a free check for your repo &rarr;</a></p>
+  <p class="proof-sub" style="text-align:left;margin:0 0 18px">A second front, opened 07-24. AI-authored PRs now merge on green CI &mdash; written by one bot, reviewed by another, rubber-stamped by a human. We point the same hostile verifier at <b style="color:var(--white)">other agents&rsquo; open PRs</b>: reproduce the claim in a pristine tree, then try to break it. A finding posts only when the failure reproduces deterministically &mdash; and every one below survived that gate <span class="em">after</span> the PR&rsquo;s own CI passed and its AI reviewers signed off. The mechanical half of this discipline &mdash; can the PR&rsquo;s own tests fail? &mdash; is packaged as <a href="https://github.com/marketplace/actions/coretexa-verify" style="color:var(--cyan)">a free check for your repo &rarr;</a></p>
   <div class="log">
 
     <article class="entry">
