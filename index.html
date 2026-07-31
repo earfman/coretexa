@@ -560,27 +560,30 @@ section.final.wrap{padding:100px 28px}
 <!-- ================= A REAL CATCH ================= -->
 <section class="wrap" id="catch">
   <div class="sec-tag"><span class="num">05</span> A real catch</div>
-  <h2 style="font-size:clamp(26px,3.2vw,38px);margin-bottom:26px">Refuted, ignored, merged &mdash; then fixed upstream.</h2>
+  <h2 style="font-size:clamp(26px,3.2vw,38px);margin-bottom:26px">Three rounds of AI review. No test touched the new code.</h2>
   <div class="catch reveal">
     <div class="ch">
-      <span class="verd">REFUTED &middot; reproduced</span>
-      <span class="repo">SollanSystems/loop-engineer #80</span>
-      <span class="mono" style="font-size:12px;color:var(--ink-dim)">&ldquo;Prevent EventStore reads from creating -wal/-shm sidecars&rdquo;</span>
+      <span class="verd">NO_GATE &middot; reproduced</span>
+      <span class="repo">yorukot/superfile #1545</span>
+      <span class="mono" style="font-size:12px;color:var(--ink-dim)">&ldquo;feat(metadata): cache directory size calculations&rdquo;</span>
     </div>
     <div class="cb">
-      <p>The fix works on a clean store. But when a crash leaves an <code class="mono">events.db-wal</code> behind, the read path falls back to <code class="mono">mode=ro</code> and SQLite creates a <code class="mono">-shm</code> sidecar anyway &mdash; the exact thing the pull request promises to prevent. Its own new test only covers the clean branch, so it passes green while the real case leaks. Two automated reviewers looked at this pull request and missed it.</p>
+      <p>The pull request did two things: it added a directory-size cache, and it added request tracking to keep stale results from being applied to the wrong path. The cache was well tested. The request tracking was not tested at all &mdash; and nothing in the review caught it, because a passing suite looks the same either way.</p>
       <div class="term" style="font-size:12px">
         <div class="term-body">
-<span class="l"><span class="c-com"># crash-left state on disk: events.db + events.db-wal (no -shm)</span></span>
-<span class="l"><span class="c-cmd">files before read:</span> ['events.db', 'events.db-wal']</span>
-<span class="l"><span class="c-cmd">files after read :</span> ['events.db', <span class="c-bad">'events.db-shm'</span>, 'events.db-wal']</span>
-<span class="l"><span class="c-flag">RESULT: -shm sidecar created by a READ? True</span></span>
+<span class="l"><span class="c-com"># put the request-tracking hunks back the way they were, keep every new test</span></span>
+<span class="l"><span class="c-cmd">reverted:</span> model.go L148-155, L162-174 &middot; model_msg.go L172-182</span>
+<span class="l"><span class="c-cmd">tests:</span> <span class="c-ok">67 passed</span>, <span class="c-dim">0 failed</span></span>
+<span class="l"><span class="c-cmd">grep across *_test.go:</span> <span class="c-bad">no match</span> <span class="c-dim">for IsPending, IsFresh, SetPendingRequest, MatchPendingRequest, ClearPendingRequest</span></span>
+<span class="l"></span>
+<span class="l"><span class="c-bad">NO_GATE</span> <span class="c-dim">&mdash; the new tests do not detect the new code</span></span>
         </div>
       </div>
-      <p class="epi"><b>Epilogue.</b> The pull request was merged anyway, two days later, unchanged, on green CI. So we filed the leak as an issue with a script that seeds the crash state its test never builds. The maintainer fixed it in <b>PR #89</b> &mdash; rejecting both shortcuts the issue named &mdash; and closed the issue as completed. The refute was right. It just needed somewhere a merge could not scroll past it.</p>
+      <p>Five new symbols, none of them named in a single test file. Revert all three hunks and the suite is still green, so the change could break in any future edit and nothing would say so.</p>
+      <p class="epi">CodeRabbit had reviewed this pull request three times and posted rounds of design opinions on exactly that code. It never mentioned that the code had no tests. That is the gap this check is for: not whether the code is good, but whether anything would notice if it stopped working.</p>
+      <p class="epi">The contributor added <code class="mono">request_tracking_test.go</code> plus integration tests the next day &mdash; and while writing them, found and fixed a stale-response bug on the same path that our report had not named. That is the intended shape of this: the check points at an untested change, and the person who wrote it does the rest.</p>
     </div>
   </div>
-  <p style="margin-top:26px;color:var(--ink-dim);font-size:15px;max-width:760px">More of these &mdash; including the ones that came back clean, which matter just as much &mdash; are on the <a href="/proof.html" style="color:var(--cyan);border-bottom:1px solid var(--cyan-dim)">proof page</a>.</p>
 </section>
 
 <div class="divider"></div>
@@ -592,7 +595,7 @@ section.final.wrap{padding:100px 28px}
   <p style="max-width:760px;color:var(--ink-dim);font-size:16px">A tool that claims to catch everything is a tool you cannot trust on anything. This one answers a single narrow question, and these are the questions it does not answer.</p>
   <ul class="cannot">
     <li><b>Whether the fix is correct</b>A perfectly correct fix with no test is <code class="mono">NO_GATE</code>. A subtly wrong fix with a test that pins the wrong behaviour is <code class="mono">GATE_HOLDS</code>. It measures whether a change is observable, never whether it is right.</li>
-    <li><b>Whether the change covers every case</b><code class="mono">GATE_HOLDS</code> means the tests notice this change. It says nothing about the case the author never considered &mdash; which is exactly how the loop-engineer bug above survived.</li>
+    <li><b>Whether the change covers every case</b><code class="mono">GATE_HOLDS</code> means the tests notice this change. It says nothing about the case the author never considered &mdash; We have a worked example of our own: a SollanSystems/loop-engineer pull request that left SQLite sidecar files behind on a crash-recovered store. We refuted it by hand &mdash; and when we later ran this check against it, the verdict was <code class="mono">GATE_HOLDS</code>. The tests did gate the change. The change was still incomplete. Finding that needs a person, or the deeper adversarial pass, not this.</li>
     <li><b>Anything about code the runner cannot reach</b>Frontend assets under a Go test runner, dependency manifests, generated files. These are reported as unreachable rather than silently counted.</li>
     <li><b>Whether the pull request should be merged</b>It produces one piece of evidence for a human decision. It is non-blocking by default for exactly that reason.</li>
   </ul>
