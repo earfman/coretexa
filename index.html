@@ -419,7 +419,7 @@ section.final.wrap{padding:100px 28px}
         </div>
       </div>
       <p class="mono" style="font-size:11.5px;color:var(--ink-dim);margin-top:12px;text-align:right">a live, unmodified verdict &mdash; not a mock-up</p>
-      <p class="mono" style="font-size:12px;color:var(--ink-dim);margin-top:22px;text-align:right;line-height:1.8">the same discipline, applied to our own work:<br><b style="color:var(--ok)">5 fixes merged upstream</b> &mdash; <a href="https://github.com/google/gson/pull/3059" target="_blank" rel="noopener" style="color:var(--ink)">gson</a>, <a href="https://github.com/bazelbuild/buildtools/pull/1481" target="_blank" rel="noopener" style="color:var(--ink)">buildtools</a>, <a href="https://github.com/PrefectHQ/fastmcp/pull/4517" target="_blank" rel="noopener" style="color:var(--ink)">fastmcp</a>, <a href="https://github.com/VirtusLab/git-machete/pull/1755" target="_blank" rel="noopener" style="color:var(--ink)">git-machete</a>, <a href="https://github.com/Sollumz/szio/pull/2" target="_blank" rel="noopener" style="color:var(--ink)">szio</a></p>
+      <p class="mono" style="font-size:12px;color:var(--ink-dim);margin-top:22px;text-align:right;line-height:1.8">the same discipline, applied to our own work:<br><b style="color:var(--ok)">7 fixes merged upstream</b> &mdash; <a href="https://github.com/google/gson/pull/3059" target="_blank" rel="noopener" style="color:var(--ink)">gson</a>, <a href="https://github.com/bazelbuild/buildtools/pull/1481" target="_blank" rel="noopener" style="color:var(--ink)">buildtools</a>, <a href="https://github.com/PrefectHQ/fastmcp/pull/4517" target="_blank" rel="noopener" style="color:var(--ink)">fastmcp</a>, <a href="https://github.com/VirtusLab/git-machete/pull/1755" target="_blank" rel="noopener" style="color:var(--ink)">git-machete</a>, <a href="https://github.com/Sollumz/szio/pull/2" target="_blank" rel="noopener" style="color:var(--ink)">szio</a>, <a href="https://github.com/pallets-eco/croniter/pull/246" target="_blank" rel="noopener" style="color:var(--ink)">croniter</a>, <a href="https://github.com/yorukot/superfile/pull/1552" target="_blank" rel="noopener" style="color:var(--ink)">superfile</a></p>
     </div>
   </div>
 </header>
@@ -553,7 +553,7 @@ section.final.wrap{padding:100px 28px}
 <span class="l">      - <span class="c-key">uses</span>: <span class="c-str">earfman/coretexa-verify@v1</span></span>
     </div>
   </div>
-  <p class="mono" style="font-size:12.5px;color:var(--ink-dim);margin-top:18px">Read-only. The verdict goes to the job summary, so nothing needs write access &mdash; the safest thing to run on a public repo that takes fork pull requests. Want it as a PR comment instead? Add <span style="color:var(--amber)">pull-requests: write</span> and pass <span style="color:var(--amber)">github-token</span>. Non-blocking either way &mdash; it never wedges your merge queue.</p>
+  <p class="mono" style="font-size:12.5px;color:var(--ink-dim);margin-top:18px">Read-only. The verdict goes to the job summary, so nothing needs write access &mdash; the safest thing to run on a public repo that takes fork pull requests. Want it as a PR comment instead? Add <span style="color:var(--amber)">pull-requests: write</span> and pass <span style="color:var(--amber)">github-token</span>. Non-blocking by default &mdash; it only fails the job if you opt in with <span style="color:var(--amber)">fail-on</span>.</p>
 </section>
 
 <div class="divider"></div>
@@ -610,10 +610,10 @@ section.final.wrap{padding:100px 28px}
   <p class="proof-quote">Everything it says, it established by running something.</p>
   <div class="stats">
     <div class="stat"><span class="dim-line"></span><div class="num">0</div><div class="cap">dependencies &mdash; pure stdlib</div></div>
-    <div class="stat amber"><span class="dim-line"></span><div class="num">507</div><div class="cap">unit tests, no network needed</div></div>
+    <div class="stat amber"><span class="dim-line"></span><div class="num">513</div><div class="cap">unit tests, no network needed</div></div>
     <div class="stat"><span class="dim-line"></span><div class="num">5</div><div class="cap">languages supported</div></div>
   </div>
-  <p class="proof-sub">MIT licensed. Runs entirely on your runner &mdash; no telemetry, no analytics, and no network access beyond git and the token you hand it. Secrets are stripped from the environment of every subprocess that runs your repository&rsquo;s code, so a pull request cannot read your workflow token out of a test.</p>
+  <p class="proof-sub">MIT licensed. Runs entirely on your runner &mdash; no telemetry and no analytics, and nothing is sent anywhere. It touches the network only for git and, unless you set <code class="mono">install-deps: false</code>, to install your project&rsquo;s own declared test dependencies. Secrets are stripped from the environment of every subprocess that runs your repository&rsquo;s code, so a pull request cannot read your workflow token out of a test.</p>
   <div class="hero-cta" style="justify-content:center;margin-top:30px">
     <a href="https://github.com/earfman/coretexa-verify" target="_blank" rel="noopener" class="btn btn-primary btn-lg">★ Star on GitHub</a>
     <a href="https://github.com/earfman/coretexa-verify#readme" target="_blank" rel="noopener" class="btn btn-ghost btn-lg">Read the docs</a>
