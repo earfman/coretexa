@@ -602,17 +602,19 @@ footer a:hover{color:var(--cyan)}
     <article class="entry">
       <span class="corner tl"></span><span class="corner br"></span>
       <div class="top">
-        <span class="date">2026-07-19</span>
-        <span class="repo">jd/tenacity #658</span>
+        <span class="date">2026-07-19 &rarr; 07-29</span>
+        <span class="repo">jd/tenacity #658 &rarr; PR #659 / #660</span>
         <span class="badge lang">Python</span>
-        <span class="badge open">PR open</span>
+        <span class="badge caught">&#10003; fixed upstream &mdash; our PR closed</span>
       </div>
       <h3><code>raise e from e</code> pinned a core at 100% forever &mdash; and <code>stop_after_attempt</code> could not stop it</h3>
       <p><code>retry_if_exception_cause_type</code> walks the <code>__cause__</code> chain until it reaches <code>None</code>. A cyclic chain never does, and the simplest cycle is the one-liner <code>raise e from e</code>. What makes this worse than an ordinary hang is <em>where</em> it spins: inside the retry predicate. Tenacity only consults stop conditions <span class="em">after</span> the predicate returns, so <code>stop_after_attempt</code>, <code>stop_after_delay</code> and every other bound the user configured are unreachable. The stdlib <code>traceback</code> module guards against exactly these cause cycles when walking exception chains; tenacity did not.</p>
       <p style="font-size:13px;margin-top:8px">The regression test hangs indefinitely on <code>main</code> and passes in milliseconds with the fix &mdash; bounded only by an external timeout, which is the honest way to write a test for a hang. Both cycle shapes are covered: the self-cause one-liner and a two-node <code>a &rarr; b &rarr; a</code>.</p>
+      <p style="font-size:13px;margin-top:8px"><b>What happened next.</b> Issue #658 went up at 19:55 with the two-line fix spelled out, the stdlib precedent named, and both cycle shapes given as runnable repros; PR #659 followed seven minutes later. Four days after that, PR #660 arrived from another contributor &mdash; same <code>id(exc)</code> cycle guard, same <code>traceback</code> precedent, same two cycle shapes as tests. The maintainer approved it on 07-29 and it merged as <code>b3c5a9f</code>. On 08-01 we closed #659 as a patch against a tree that already had the fix. The related note in #658 &mdash; that the proposed <code>retry_unless_exception_cause_type</code> inherits the same unguarded walk &mdash; was picked up by the same contributor as #663, still open. <span style="color:var(--ink-dim)">The merge is not ours and is not counted as one above. Filing the diagnosis publicly and the patch separately is what left the gap; the fix shipping is still the outcome we wanted.</span></p>
       <div class="links">
         <a href="https://github.com/jd/tenacity/issues/658" target="_blank" rel="noopener">Issue #658 &rarr;</a>
-        <a href="https://github.com/jd/tenacity/pull/659" target="_blank" rel="noopener">Pull request #659 &rarr;</a>
+        <a href="https://github.com/jd/tenacity/pull/659" target="_blank" rel="noopener">Our pull request #659 &rarr;</a>
+        <a href="https://github.com/jd/tenacity/pull/660" target="_blank" rel="noopener">The merged fix, PR #660 &rarr;</a>
       </div>
     </article>
 
