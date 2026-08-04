@@ -699,12 +699,13 @@ footer a:hover{color:var(--cyan)}
         <span class="date">2026-07-14</span>
         <span class="repo">cli/cli #9252</span>
         <span class="badge lang">Go</span>
-        <span class="badge open">PR open</span>
+        <span class="badge" style="color:var(--ink-dim);border-color:var(--line)">closed &middot; policy</span>
         <span class="badge" style="color:var(--cyan);border-color:var(--cyan-dim)">&#9679; first-pass verified</span>
       </div>
       <h3><code>gh search code --repo A,B --web</code> built an <span style="color:var(--white)">unsatisfiable</span> query &mdash; on GitHub&rsquo;s own CLI</h3>
       <p>Searching code across multiple repos with <code>--web</code> opened the browser with <code>keyword repo:A repo:B</code>. GitHub&rsquo;s code search ANDs repeated qualifiers, so that asks for a file in <em>both</em> repos at once &mdash; impossible &mdash; and the page returns &ldquo;condition is unsatisfiable.&rdquo; The fix OR-groups them: <code>( keyword ) (repo:A OR repo:B)</code>, scoped to github.com so enterprise&rsquo;s legacy search isn&rsquo;t disturbed. A verification protocol that runs on GitHub, fixing GitHub&rsquo;s own tool.</p>
       <div class="catch" style="border-left-color:var(--cyan)"><b style="color:var(--cyan)">First-pass-correct.</b> <span class="em">The first run where the verifier didn&rsquo;t catch a defect</span> &mdash; the doer got the fix, tests, and scoping right first try. The verifier confirmed the non-obvious part: the parentheses are load-bearing. A naive <code>keyword repo:A OR repo:B</code> would parse as <code>(keyword AND repo:A) OR repo:B</code> &mdash; silently returning <em>every</em> file in the second repo. It also flagged one pre-existing scope gap (<code>--match file,path</code>), which we disclosed in the PR rather than silently ship or speculatively over-fix. We log this as <b style="color:var(--white)">not a catch</b>, on purpose.</div>
+      <p style="font-size:13px;margin-top:8px"><b style="color:var(--amber)">Auto-closed 07-19 &mdash; and the mistake was ours.</b> A bot flagged the PR seconds after it opened: <code>cli/cli</code> only reviews pull requests that reference an issue carrying the <code>help wanted</code> label, and #9252 does not have one. The warning gave four days to fix it. We did not, and it closed with an <code>unmet-requirements</code> label without a human ever reading the change. Same class as the <code>pydantic</code> closure below &mdash; both were rules written down in the repository before we posted, and both cost a correct fix.</p>
       <div class="links">
         <a href="https://github.com/cli/cli/pull/13874" target="_blank" rel="noopener">Pull request #13874 &rarr;</a>
         <a href="https://github.com/cli/cli/issues/9252" target="_blank" rel="noopener">Issue #9252 &rarr;</a>
